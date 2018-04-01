@@ -23,6 +23,17 @@
       "env": {
         "NODE_ENV": "test" // make sure it matches your target; useful for babel config
       }
+    },
+    {
+      "name": "Debug Client App",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "trace": true,
+      "webRoot": "${workspaceFolder}/client/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      }
     }
   ]
 }
