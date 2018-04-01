@@ -50,9 +50,13 @@ This project follows the setup as described in [Running Create React App and Exp
 
 You can follow the steps below to deploy this application to Heroku.
 
-TODO: add the steps for adding mLab mongodb addon
+### Steps
 
-### Environment Variable in Heroku Application Settings
+1. Create a new application on heroku and link it with the github repository
+
+2. configure a new add-on for MongoDB (e.g. the one from mLab)
+
+3. configure environment variables in Heroku application settings
 
 You need to configure the environment variables you have put in the `server/.env` file:
 
@@ -63,7 +67,7 @@ You need to configure the environment variables you have put in the `server/.env
 - SECRET
   - You need to choose a random secret to sign JWT tokens during authentication
 
-TODO: how to set these variables with heroku CLI
+4. deploy the application
 
 ### Deployment Script
 
@@ -71,10 +75,21 @@ TODO: how to set these variables with heroku CLI
 // navigate to the root of your project
 // login to Heroku (if you aren't already)
 heroku login
+
 // create your heroku project, make sure to replace name-of-my-app, // with the actual name of your app. Note, this name must be unique // across of all heroku. 
 heroku create name-of-my-app
+
 // add the latest nodejs build pack to our project
 heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#yarn
+
+// add mongodb add-on
+heroku addons:create mongolab:sandbox
+
+// set environment variables
+
+heroku config:set NODE_ENV=production
+heroku config:set SECRET=choose_your_secret_for_jwt_token_signing
+
 // push our code to heroku.  This step will take the longest
 git push heroku master
 // let's launch your app
