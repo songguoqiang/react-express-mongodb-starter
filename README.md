@@ -22,7 +22,21 @@ yarn install
 
 ## Setup your local MongoDB
 
-TODO: add the steps for starting local DB instance
+To run the server locally, you need a connection to some MongoDB instance.
+
+If you installed the MongoDB on your machine, you can start it with
+
+```shell
+mongod --dbpath /path/to/mongodb/storage/directory
+```
+
+Note that the `/path/to/mongodb/storage/directory` should exist and you have write permission to it.
+
+## Configure your local .env file
+
+In the `server` directory, you need to add one `.env` file.
+
+You can follow the example in `.env.example` file.
 
 ## Start both client and server locally
 
@@ -37,7 +51,21 @@ This project follows the setup as described in [Running Create React App and Exp
 You can follow the steps below to deploy this application to Heroku.
 
 TODO: add the steps for adding mLab mongodb addon
-TODO: add the steps to configure environment variables
+
+### Environment Variable in Heroku Application Settings
+
+You need to configure the environment variables you have put in the `server/.env` file:
+
+- NODE_ENV
+  - This needs to be set to 'production'
+- MONGODB_URI
+  - This should have been automatically set by Heroku when you add an `mLab` add-on
+- SECRET
+  - You need to choose a random secret to sign JWT tokens during authentication
+
+TODO: how to set these variables with heroku CLI
+
+### Deployment Script
 
 ```shell
 // navigate to the root of your project

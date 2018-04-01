@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 app.use(require("method-override")());
 
-const staticFiles = express.static(path.join(__dirname, "../../client/build"));
+const staticFiles = express.static(path.join(__dirname, "../client/build"));
 
 if (isProduction) {
   app.use(staticFiles);
@@ -32,12 +32,10 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 
-if (isProduction) {
+const isMongooseConnectionProvided = process.env.NODE_ENV === "integration";
+if (!isMongooseConnectionProvided) {
   mongoose.connect(process.env.MONGODB_URI);
-} else {
-  const isMongooseConnectionProvided = process.env.NODE_ENV === "integration";
-  if (!isMongooseConnectionProvided) {
-    mongoose.connect("mongodb://localhost/conduit");
+  if (!isProduction) {
     mongoose.set("debug", true);
   }
 }
@@ -48,7 +46,7 @@ app.use(require("./routes"));
 
 if (isProduction) {
   app.get("/*", function(req, res) {
-    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
   });
 }
 
