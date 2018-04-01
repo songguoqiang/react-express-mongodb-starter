@@ -5,6 +5,9 @@
   "main": "server/server.js",
   "scripts": {
     "precommit": "lint-staged",
+    "start":
+      "concurrently --kill-others-on-fail \"yarn start-server\" \"yarn start-client\"",
+    "start-client": "node ./start-client.js",
     "start-server": "node ./server/server.js",
     "watch-server": "nodemon ./server/server.js",
     "test-server": "jest",
@@ -40,6 +43,7 @@
   "devDependencies": {
     "@types/jest": "^22.0.1",
     "@types/mongoose": "^4.7.33",
+    "concurrently": "^3.5.1",
     "eslint": "^4.16.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-jest": "^21.7.0",
