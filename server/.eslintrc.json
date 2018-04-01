@@ -3,10 +3,8 @@
     "node": true,
     "es6": true
   },
-  "parser": "babel-eslint",
-  "parserOptions": { "ecmaVersion": 8},
+  "parserOptions": { "ecmaVersion": 8 },
   "extends": [
-    "react-app",
     "eslint:recommended",
     "plugin:jest/recommended",
     "plugin:prettier/recommended"

@@ -14,7 +14,7 @@
       "name": "Debug Server Test", // name to show in Debug config picker
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+      "program": "${workspaceRoot}/server/node_modules/jest/bin/jest.js",
       "sourceMaps": true, // if you are using Babel or TS, make this true
       // you can add another arg to pattern-match limit the tests, just as when normally running jest
       "args": ["-i", "--runInBand", "--no-cache"],
