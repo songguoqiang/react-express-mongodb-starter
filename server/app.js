@@ -6,6 +6,8 @@ const express = require("express"),
   errorhandler = require("errorhandler"),
   mongoose = require("mongoose");
 
+const path = require("path");
+
 const isProduction = process.env.NODE_ENV === "production";
 
 // Create global app object
@@ -19,7 +21,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(require("method-override")());
-app.use(express.static(__dirname + "/public"));
+
+const staticFiles = express.static(path.join(__dirname, "../../client/build"));
+
+if (isProduction) {
+  app.use(staticFiles);
+}
 
 if (!isProduction) {
   app.use(errorhandler());
@@ -38,6 +45,12 @@ if (isProduction) {
 require("./models/User");
 require("./config/passport");
 app.use(require("./routes"));
+
+if (isProduction) {
+  app.get("/*", function(req, res) {
+    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  });
+}
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
