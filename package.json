@@ -4,14 +4,15 @@
   "description": "A starter project for running React and Express together",
   "main": "server/server.js",
   "scripts": {
-    "start": "node ./server/server.js",
-    "dev": "nodemon ./server/server.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "start-server": "node ./server/server.js",
+    "watch-server": "nodemon ./server/server.js",
+    "test-server": "jest",
+    "test-server:watch": "jest --watch",
+    "test-server:coverage": "jest --coverage"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["<rootDir>/client/", "<rootDir>/node_modules/"]
   },
   "repository": {
   },
