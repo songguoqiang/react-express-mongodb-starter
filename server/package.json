@@ -10,9 +10,6 @@
     "test-server:watch": "jest --watch",
     "test-server:coverage": "jest --coverage"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "repository": {},
   "license": "MIT",
   "dependencies": {
@@ -48,5 +45,16 @@
     "prettier": "^1.11.1",
     "sinon": "^4.2.1",
     "supertest": "^3.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": -50
+      }
+    }
   }
 }
