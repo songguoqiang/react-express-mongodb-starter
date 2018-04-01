@@ -5,6 +5,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "install": "(cd client && yarn) && (cd server && yarn)",
+    "test": "(cd client && CI=true yarn test) && (cd server && yarn test)",
     "build": "concurrently \"cd client && yarn build\"",
     "heroku-postbuild": "yarn build",
     "start":
