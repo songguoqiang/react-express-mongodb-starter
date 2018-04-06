@@ -32,11 +32,11 @@ async function registerNewUser(req, res) {
 
 function login(req, res, next) {
   if (!req.body.user.email) {
-    return res.status(422).json({ errors: { email: ["can't be blank"] } });
+    return res.status(401).json({ msg: "The email address can't be blank" });
   }
 
   if (!req.body.user.password) {
-    return res.status(422).json({ errors: { password: ["can't be blank"] } });
+    return res.status(401).json({ msg: "The password can't be blank" });
   }
 
   passport.authenticate("local", { session: false }, function(err, user, info) {
@@ -47,7 +47,7 @@ function login(req, res, next) {
     if (user) {
       return res.json({ token: user.generateJWT(), user: user.toJSON() });
     } else {
-      return res.status(422).json(info);
+      return res.status(401).json(info);
     }
   })(req, res, next);
 }

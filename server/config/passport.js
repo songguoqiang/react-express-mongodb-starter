@@ -14,7 +14,7 @@ passport.use(
         let user = await User.findOne({ email: email });
         if (!user || !user.validPassword(password)) {
           return done(null, false, {
-            errors: { "email or password": ["is invalid"] }
+            msg: "Your email or password is invalid"
           });
         }
         return done(null, user);

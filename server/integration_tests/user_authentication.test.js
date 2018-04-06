@@ -33,9 +33,9 @@ describe("User authentication", () => {
     let response = await request(app)
       .post("/api/users/login")
       .send({ user: { password } });
-    expect(response.statusCode).toBe(422);
-    let responseErrors = response.body.errors;
-    expect(responseErrors["email"]).toEqual(["can't be blank"]);
+    expect(response.statusCode).toBe(401);
+    let message = response.body.msg;
+    expect(message).toMatch(/email/);
   });
 
   test("Login with invalid user email", async () => {
@@ -44,9 +44,9 @@ describe("User authentication", () => {
     let response = await request(app)
       .post("/api/users/login")
       .send({ user: { email, password } });
-    expect(response.statusCode).toBe(422);
-    let responseErrors = response.body.errors;
-    expect(responseErrors["email or password"]).toEqual(["is invalid"]);
+    expect(response.statusCode).toBe(401);
+    let message = response.body.msg;
+    expect(message).toMatch(/invalid/);
   });
 
   test("Login with missing user password", async () => {
@@ -54,9 +54,9 @@ describe("User authentication", () => {
     let response = await request(app)
       .post("/api/users/login")
       .send({ user: { email } });
-    expect(response.statusCode).toBe(422);
-    let responseErrors = response.body.errors;
-    expect(responseErrors["password"]).toEqual(["can't be blank"]);
+    expect(response.statusCode).toBe(401);
+    let message = response.body.msg;
+    expect(message).toMatch(/password/);
   });
 
   test("Login with invalid password", async () => {
@@ -65,8 +65,8 @@ describe("User authentication", () => {
     let response = await request(app)
       .post("/api/users/login")
       .send({ user: { email, password } });
-    expect(response.statusCode).toBe(422);
-    let responseErrors = response.body.errors;
-    expect(responseErrors["email or password"]).toEqual(["is invalid"]);
+    expect(response.statusCode).toBe(401);
+    let message = response.body.msg;
+    expect(message).toMatch(/invalid/);
   });
 });
