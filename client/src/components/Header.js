@@ -85,7 +85,7 @@ class Header extends React.Component {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <NavLink exact to="/" activeClassName="navbar-brand">
+            <NavLink exact to="/" className="navbar-brand">
               Project name
             </NavLink>
           </div>
@@ -117,4 +117,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withRouter(withCookies(Header)));
+export default withRouter(connect(mapStateToProps)(withCookies(Header)));
