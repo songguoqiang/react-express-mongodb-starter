@@ -25,7 +25,6 @@ describe("User profile", () => {
     let userProfile = response.body.profile;
     expect(userProfile.username).toBe(fixtures.users.tom.username);
     expect(userProfile.gravatar).toBeDefined();
-    expect(userProfile.following).toBeDefined();
   });
 
   test("Get user profiles after login", async () => {
@@ -41,6 +40,5 @@ describe("User profile", () => {
     let userProfile = response.body.profile;
     expect(userProfile.username).toBe(fixtures.users.tom.username);
     expect(userProfile.gravatar).toBeDefined();
-    expect(userProfile.following).toBeDefined();
   });
 });

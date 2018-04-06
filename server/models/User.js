@@ -105,8 +105,7 @@ UserSchema.methods.getProfile = function(currentUserInSession) {
   return {
     username: this.username,
     bio: this.bio,
-    gravatar: this.getGravatar(),
-    following: false
+    gravatar: this.getGravatar()
   };
 };
 
