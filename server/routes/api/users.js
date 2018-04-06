@@ -3,7 +3,7 @@ const handleAsyncError = require("express-async-wrap");
 const userMiddleware = require("../../middlewares/user_middleware");
 const jwt = require("../../middlewares/jwt_middleware");
 
-router.post("/users", handleAsyncError(userMiddleware.registerNewUser));
+router.post("/users/signup", handleAsyncError(userMiddleware.registerNewUser));
 
 router.post("/users/login", userMiddleware.login);
 

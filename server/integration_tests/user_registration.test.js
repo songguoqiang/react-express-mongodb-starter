@@ -18,7 +18,7 @@ describe("New user registration", () => {
     const password = "mypassword";
 
     let response = await request(app)
-      .post("/api/users")
+      .post("/api/users/signup")
       .send({ user: { username, email, password } });
     let userJson = response.body.user;
     let jwtToken = response.body.token;
@@ -35,7 +35,7 @@ describe("New user registration", () => {
     const email = "random@example.com";
     const password = "mypassword";
     let response = await request(app)
-      .post("/api/users")
+      .post("/api/users/signup")
       .send({ user: { username, email, password } });
 
     expect(response.statusCode).toBe(422);
@@ -48,7 +48,7 @@ describe("New user registration", () => {
     const email = fixtures.users.tom.email;
     const password = "mypassword";
     let response = await request(app)
-      .post("/api/users")
+      .post("/api/users/signup")
       .send({ user: { username, email, password } });
 
     expect(response.statusCode).toBe(422);
