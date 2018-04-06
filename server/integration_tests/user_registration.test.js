@@ -21,12 +21,13 @@ describe("New user registration", () => {
       .post("/api/users")
       .send({ user: { username, email, password } });
     let userJson = response.body.user;
+    let jwtToken = response.body.token;
 
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
     expect(userJson.username).toEqual(username);
     expect(userJson.email).toEqual(email);
-    expect(userJson.token).toBeDefined();
+    expect(jwtToken).toBeDefined();
   });
 
   test("Register with duplicated username should fail", async () => {

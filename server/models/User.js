@@ -80,17 +80,6 @@ UserSchema.methods.getGravatar = function() {
   return "https://gravatar.com/avatar/" + md5 + "?s=200&d=retro";
 };
 
-UserSchema.methods.toJSONWithAuthToken = function() {
-  return {
-    username: this.username,
-    email: this.email,
-    displayName: this.displayName,
-    token: this.generateJWT(),
-    bio: this.bio,
-    gravatar: this.getGravatar()
-  };
-};
-
 UserSchema.methods.toJSON = function() {
   return {
     username: this.username,

@@ -29,8 +29,7 @@ describe("User profile", () => {
 
   test("Get user profiles after login", async () => {
     let loginUser = fixtures.users.jacky;
-    let loginResponse = await loginAs(app, loginUser.email, loginUser.password);
-    let jwtToken = loginResponse.token;
+    let jwtToken = await loginAs(app, loginUser.email, loginUser.password);
 
     let response = await request(app)
       .get("/api/profiles/tom")

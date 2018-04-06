@@ -27,7 +27,7 @@ async function registerNewUser(req, res) {
   user.setPassword(req.body.user.password);
 
   await user.save();
-  return res.json({ user: user.toJSONWithAuthToken() });
+  return res.json({ token: user.generateJWT(), user: user.toJSON() });
 }
 
 function login(req, res, next) {
@@ -45,8 +45,7 @@ function login(req, res, next) {
     }
 
     if (user) {
-      user.token = user.generateJWT();
-      return res.json({ user: user.toJSONWithAuthToken() });
+      return res.json({ token: user.generateJWT(), user: user.toJSON() });
     } else {
       return res.status(422).json(info);
     }

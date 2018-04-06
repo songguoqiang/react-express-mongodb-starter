@@ -20,11 +20,12 @@ describe("User authentication", () => {
       .send({ user: { email, password } });
 
     let userJson = response.body.user;
+    let jwtToken = response.body.token;
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
     expect(userJson.email).toEqual(email);
-    expect(userJson.token).toBeDefined();
-    expect(userJson.token).not.toBeNull();
+    expect(jwtToken).toBeDefined();
+    expect(jwtToken).not.toBeNull();
   });
 
   test("Login with missing user email", async () => {

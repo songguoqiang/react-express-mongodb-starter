@@ -6,7 +6,7 @@ async function loginAs(app, email, password) {
     .send({ user: { email, password } });
 
   expect(response.statusCode).toBe(200);
-  return response.body.user;
+  return response.body.token;
 }
 
 module.exports = loginAs;

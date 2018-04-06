@@ -19,7 +19,7 @@ async function loginAsTom() {
   let response = await request(app)
     .post("/api/users/login")
     .send({ user: { email, password } });
-  jwtToken = response.body.user.token;
+  jwtToken = response.body.token;
 }
 
 describe("Accessing User API without login", () => {
@@ -51,7 +51,6 @@ describe("Accessing User API after login", () => {
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
     expect(userJson.email).toEqual(fixtures.users.tom.email);
-    expect(userJson.token).not.toBeDefined();
   });
 
   test("Update user profile", async () => {

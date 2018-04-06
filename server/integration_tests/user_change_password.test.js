@@ -20,7 +20,7 @@ async function loginAsTom(password) {
     .send({ user: { email, password } });
 
   expect(response.statusCode).toBe(200);
-  jwtToken = response.body.user.token;
+  jwtToken = response.body.token;
 }
 
 test("Change password on the current user", async () => {
