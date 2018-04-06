@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const crypto = require("crypto");
+const bcrypt = require("bcrypt");
+
 const uniqueValidator = require("mongoose-unique-validator");
 const jwt = require("jsonwebtoken");
 const secret = require("../config").secret;
@@ -26,7 +27,6 @@ const UserSchema = new mongoose.Schema(
     bio: String,
     image: String,
     hashedPassword: String,
-    salt: String,
     passwordResetToken: String,
     passwordResetExpires: Date
   },
@@ -36,12 +36,13 @@ const UserSchema = new mongoose.Schema(
 UserSchema.plugin(uniqueValidator, { message: "should be unique" });
 
 UserSchema.methods.setPassword = function(password) {
-  this.salt = generateSalt();
-  this.hashedPassword = hashPassword(password, this.salt);
+  const saltRounds = 10;
+  const salt = bcrypt.genSaltSync(saltRounds);
+  this.hashedPassword = bcrypt.hashSync(password, salt);
 };
 
 UserSchema.methods.validPassword = function(password) {
-  return this.hashedPassword === hashPassword(password, this.salt);
+  return bcrypt.compareSync(password, this.hashedPassword);
 };
 
 UserSchema.methods.generateJWT = function() {
@@ -99,13 +100,4 @@ UserSchema.methods.getProfile = function(currentUserInSession) {
   };
 };
 
-function generateSalt() {
-  return crypto.randomBytes(16).toString("hex");
-}
-
-function hashPassword(password, salt) {
-  return crypto
-    .pbkdf2Sync(password, salt, 10000, 512, "sha512")
-    .toString("hex");
-}
 module.exports = mongoose.model("User", UserSchema);
