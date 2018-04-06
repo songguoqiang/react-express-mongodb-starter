@@ -52,7 +52,7 @@ async function updateCurrentUser(req, res) {
       errors: { "user profile": "User profile information is not given." }
     });
   }
-  ["email", "username", "image", "bio", "displayName"].forEach(detail => {
+  ["email", "username", "bio", "displayName"].forEach(detail => {
     if (newUserProfile[detail]) {
       user[detail] = newUserProfile[detail];
     }

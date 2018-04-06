@@ -24,7 +24,7 @@ describe("User profile", () => {
 
     let userProfile = response.body.profile;
     expect(userProfile.username).toBe(fixtures.users.tom.username);
-    expect(userProfile.image).toBeDefined();
+    expect(userProfile.gravatar).toBeDefined();
     expect(userProfile.following).toBeDefined();
   });
 
@@ -40,7 +40,7 @@ describe("User profile", () => {
 
     let userProfile = response.body.profile;
     expect(userProfile.username).toBe(fixtures.users.tom.username);
-    expect(userProfile.image).toBeDefined();
+    expect(userProfile.gravatar).toBeDefined();
     expect(userProfile.following).toBeDefined();
   });
 });

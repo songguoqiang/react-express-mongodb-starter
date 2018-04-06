@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const uniqueValidator = require("mongoose-unique-validator");
 const jwt = require("jsonwebtoken");
@@ -25,7 +26,6 @@ const UserSchema = new mongoose.Schema(
     },
     displayName: String,
     bio: String,
-    image: String,
     hashedPassword: String,
     passwordResetToken: String,
     passwordResetExpires: Date
@@ -69,6 +69,17 @@ UserSchema.methods.verifyJWT = function(token) {
   }
 };
 
+UserSchema.methods.getGravatar = function() {
+  if (!this.get("email")) {
+    return "https://gravatar.com/avatar/?s=200&d=retro";
+  }
+  var md5 = crypto
+    .createHash("md5")
+    .update(this.get("email"))
+    .digest("hex");
+  return "https://gravatar.com/avatar/" + md5 + "?s=200&d=retro";
+};
+
 UserSchema.methods.toJSONWithAuthToken = function() {
   return {
     username: this.username,
@@ -76,7 +87,7 @@ UserSchema.methods.toJSONWithAuthToken = function() {
     displayName: this.displayName,
     token: this.generateJWT(),
     bio: this.bio,
-    image: this.image
+    gravatar: this.getGravatar()
   };
 };
 
@@ -86,7 +97,7 @@ UserSchema.methods.toJSON = function() {
     email: this.email,
     displayName: this.displayName,
     bio: this.bio,
-    image: this.image
+    gravatar: this.getGravatar()
   };
 };
 
@@ -94,8 +105,7 @@ UserSchema.methods.getProfile = function(currentUserInSession) {
   return {
     username: this.username,
     bio: this.bio,
-    image:
-      this.image || "https://static.productionready.io/images/smiley-cyrus.jpg",
+    gravatar: this.getGravatar(),
     following: false
   };
 };

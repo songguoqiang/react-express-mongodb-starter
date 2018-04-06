@@ -29,11 +29,9 @@ describe("Accessing User API without login", () => {
   });
   test("Update user profile", async () => {
     const newBio = "new-bio";
-    const newImage = "new-image";
 
     const updatedUser = {
-      bio: newBio,
-      image: newImage
+      bio: newBio
     };
     let response = await request(app)
       .put("/api/user")
@@ -58,11 +56,9 @@ describe("Accessing User API after login", () => {
 
   test("Update user profile", async () => {
     const newBio = "new-bio";
-    const newImage = "new-image";
 
     const updatedUser = {
-      bio: newBio,
-      image: newImage
+      bio: newBio
     };
     let response = await request(app)
       .put("/api/user")
@@ -73,7 +69,6 @@ describe("Accessing User API after login", () => {
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
     expect(userJson.bio).toEqual(newBio);
-    expect(userJson.image).toEqual(newImage);
   });
 
   test("Update user profile with no user information", async () => {

@@ -223,9 +223,8 @@ describe("Generate user profile as JSON", () => {
   const email = "luke@example.com";
   const displayName = "Luke Walker";
   const bio = "user bio";
-  const image = "image location";
 
-  let user = new User({ username, email, displayName, bio, image });
+  let user = new User({ username, email, displayName, bio });
 
   beforeEach(async () => {
     await user.save();
@@ -236,7 +235,7 @@ describe("Generate user profile as JSON", () => {
     expect(userProfile.email).toEqual(email);
     expect(userProfile.displayName).toEqual(displayName);
     expect(userProfile.bio).toEqual(bio);
-    expect(userProfile.image).toEqual(image);
+    expect(userProfile.gravatar).toBeDefined();
     expect(userProfile.token).toBeDefined();
     expect(userProfile.passwordResetToken).not.toBeDefined();
   });
@@ -247,7 +246,7 @@ describe("Generate user profile as JSON", () => {
     expect(userProfile.email).toEqual(email);
     expect(userProfile.displayName).toEqual(displayName);
     expect(userProfile.bio).toEqual(bio);
-    expect(userProfile.image).toEqual(image);
+    expect(userProfile.gravatar).toBeDefined();
     expect(userProfile.token).not.toBeDefined();
     expect(userProfile.passwordResetToken).not.toBeDefined();
   });
