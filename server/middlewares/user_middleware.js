@@ -9,7 +9,7 @@ async function registerNewUser(req, res) {
   user.setPassword(req.body.user.password);
 
   await user.save();
-  return res.json({ user: user.toAuthJSON() });
+  return res.json({ user: user.toJSONWithAuthToken() });
 }
 
 function login(req, res, next) {
@@ -28,7 +28,7 @@ function login(req, res, next) {
 
     if (user) {
       user.token = user.generateJWT();
-      return res.json({ user: user.toAuthJSON() });
+      return res.json({ user: user.toJSONWithAuthToken() });
     } else {
       return res.status(422).json(info);
     }
@@ -39,7 +39,7 @@ async function getCurrentUser(req, res) {
   const userId = req.jwt.userid;
   const user = await User.findById(userId);
 
-  return res.status(200).json({ user: user.toAuthJSON() });
+  return res.status(200).json({ user: user.toJSON() });
 }
 
 async function updateCurrentUser(req, res) {
@@ -63,7 +63,7 @@ async function updateCurrentUser(req, res) {
   }
 
   await user.save();
-  return res.json({ user: user.toAuthJSON() });
+  return res.json({ user: user.toJSON() });
 }
 
 async function resolveUsername(username) {

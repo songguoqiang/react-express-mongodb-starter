@@ -233,13 +233,23 @@ describe("Generate user profile as JSON", () => {
   beforeEach(async () => {
     await user.save();
   });
-  it("should return user profile as JSON (after user login)", () => {
-    const userProfile = user.toAuthJSON();
+  it("should include JWT token in the response for login or sign up", () => {
+    const userProfile = user.toJSONWithAuthToken();
     expect(userProfile.username).toEqual(username);
     expect(userProfile.email).toEqual(email);
     expect(userProfile.displayName).toEqual(displayName);
     expect(userProfile.bio).toEqual(bio);
     expect(userProfile.image).toEqual(image);
     expect(userProfile.token).toBeDefined();
+  });
+
+  it("should exclude JWT token in the response, if a request is neither for login nor sign up", () => {
+    const userProfile = user.toJSON();
+    expect(userProfile.username).toEqual(username);
+    expect(userProfile.email).toEqual(email);
+    expect(userProfile.displayName).toEqual(displayName);
+    expect(userProfile.bio).toEqual(bio);
+    expect(userProfile.image).toEqual(image);
+    expect(userProfile.token).not.toBeDefined();
   });
 });

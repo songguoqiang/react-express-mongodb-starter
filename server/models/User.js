@@ -66,12 +66,22 @@ UserSchema.methods.verifyJWT = function(token) {
   }
 };
 
-UserSchema.methods.toAuthJSON = function() {
+UserSchema.methods.toJSONWithAuthToken = function() {
   return {
     username: this.username,
     email: this.email,
     displayName: this.displayName,
     token: this.generateJWT(),
+    bio: this.bio,
+    image: this.image
+  };
+};
+
+UserSchema.methods.toJSON = function() {
+  return {
+    username: this.username,
+    email: this.email,
+    displayName: this.displayName,
     bio: this.bio,
     image: this.image
   };
