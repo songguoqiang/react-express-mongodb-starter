@@ -2,6 +2,24 @@ const User = require("../models/User");
 const passport = require("passport");
 
 async function registerNewUser(req, res) {
+  const userFoundByEmail = await User.findOne({ email: req.body.user.email });
+  if (userFoundByEmail) {
+    return res.status(422).send({
+      msg:
+        "The email address you have entered is already associated with another account."
+    });
+  }
+
+  const userFoundByName = await User.findOne({
+    username: req.body.user.username
+  });
+  if (userFoundByName) {
+    return res.status(422).send({
+      msg:
+        "The user name you have entered is already associated with another account."
+    });
+  }
+
   var user = new User();
 
   user.username = req.body.user.username;

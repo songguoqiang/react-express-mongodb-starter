@@ -38,8 +38,8 @@ describe("New user registration", () => {
       .send({ user: { username, email, password } });
 
     expect(response.statusCode).toBe(422);
-    const errors = response.body.errors;
-    expect(errors.username).toEqual("should be unique");
+    const message = response.body.msg;
+    expect(message).toMatch(/user name/);
   });
 
   test("Register with duplicated email should fail", async () => {
@@ -51,7 +51,7 @@ describe("New user registration", () => {
       .send({ user: { username, email, password } });
 
     expect(response.statusCode).toBe(422);
-    const errors = response.body.errors;
-    expect(errors.email).toEqual("should be unique");
+    const message = response.body.msg;
+    expect(message).toMatch(/email/);
   });
 });
