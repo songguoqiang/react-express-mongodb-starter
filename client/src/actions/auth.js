@@ -5,12 +5,14 @@ export function login({ email, password, history, cookies }) {
     dispatch({
       type: "CLEAR_MESSAGES"
     });
-    return fetch("/login", {
+    return fetch("/api/users/login", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: email,
-        password: password
+        user: {
+          email: email,
+          password: password
+        }
       })
     }).then(response => {
       if (response.ok) {
@@ -20,7 +22,7 @@ export function login({ email, password, history, cookies }) {
             token: json.token,
             user: json.user
           });
-          cookies.save("token", json.token, {
+          cookies.set("token", json.token, {
             expires: moment()
               .add(1, "hour")
               .toDate()
@@ -44,10 +46,16 @@ export function signup({ name, email, password, history, cookies }) {
     dispatch({
       type: "CLEAR_MESSAGES"
     });
-    return fetch("/signup", {
+    return fetch("/api/users/signup", {
       method: "post",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, email: email, password: password })
+      body: JSON.stringify({
+        user: {
+          username: name,
+          email: email,
+          password: password
+        }
+      })
     }).then(response => {
       return response.json().then(json => {
         if (response.ok) {
@@ -57,7 +65,7 @@ export function signup({ name, email, password, history, cookies }) {
             user: json.user
           });
           history.push("/");
-          cookies.save("token", json.token, {
+          cookies.set("token", json.token, {
             expires: moment()
               .add(1, "hour")
               .toDate()
