@@ -66,6 +66,10 @@ You need to configure the environment variables you have put in the `server/.env
   - This should have been automatically set by Heroku when you add an `mLab` add-on
 - SECRET
   - You need to choose a random secret to sign JWT tokens during authentication
+- MAILGUN_API_KEY
+  - To send emails via MAILGUN service, you need to register one account on MAILGUN and get an API key
+- MAILGUN_DOMAIN
+  - This is your MAILGUN domain (you can find it at https://app.mailgun.com/app/domains)
 
 4. deploy the application
 
@@ -89,6 +93,8 @@ heroku addons:create mongolab:sandbox
 
 heroku config:set NODE_ENV=production
 heroku config:set SECRET=choose_your_secret_for_jwt_token_signing
+heroku config:set MAILGUN_API_KEY=your_mailgun_api_key
+heroku config:set MAILGUN_DOMAIN=your_mailgun_domain
 
 // push our code to heroku.  This step will take the longest
 git push heroku master
