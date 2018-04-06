@@ -26,7 +26,9 @@ const UserSchema = new mongoose.Schema(
     bio: String,
     image: String,
     hashedPassword: String,
-    salt: String
+    salt: String,
+    passwordResetToken: String,
+    passwordResetExpires: Date
   },
   { timestamps: true }
 );

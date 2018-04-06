@@ -241,6 +241,7 @@ describe("Generate user profile as JSON", () => {
     expect(userProfile.bio).toEqual(bio);
     expect(userProfile.image).toEqual(image);
     expect(userProfile.token).toBeDefined();
+    expect(userProfile.passwordResetToken).not.toBeDefined();
   });
 
   it("should exclude JWT token in the response, if a request is neither for login nor sign up", () => {
@@ -251,5 +252,6 @@ describe("Generate user profile as JSON", () => {
     expect(userProfile.bio).toEqual(bio);
     expect(userProfile.image).toEqual(image);
     expect(userProfile.token).not.toBeDefined();
+    expect(userProfile.passwordResetToken).not.toBeDefined();
   });
 });
