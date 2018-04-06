@@ -81,6 +81,30 @@ describe("Unique fields in User model", () => {
   });
 });
 
+describe("Users can have some optional attributes", () => {
+  const username = "david";
+  const email = "david@example.com";
+
+  let user = new User({
+    username: username,
+    email: email
+  });
+
+  beforeEach(async () => await user.save());
+
+  it("can have optional displayName field", async () => {
+    const displayName = "David Kok";
+    user.displayName = displayName;
+    const savedUser = await user.save();
+    expect(savedUser.displayName).toEqual(displayName);
+  });
+
+  test("the displayName field should be strings", async () => {
+    user.displayName = {};
+    await expect(user.save()).rejects.toThrow(ValidationError);
+  });
+});
+
 describe("Some fields in User model are case insensitive", () => {
   const username1 = "joe";
   const email1 = "joe@example.com";
@@ -200,10 +224,11 @@ describe("JWT tokens", () => {
 describe("Generate user profile as JSON", () => {
   const username = "luke";
   const email = "luke@example.com";
+  const displayName = "Luke Walker";
   const bio = "user bio";
   const image = "image location";
 
-  let user = new User({ username, email, bio, image });
+  let user = new User({ username, email, displayName, bio, image });
 
   beforeEach(async () => {
     await user.save();
@@ -212,6 +237,7 @@ describe("Generate user profile as JSON", () => {
     const userProfile = user.toAuthJSON();
     expect(userProfile.username).toEqual(username);
     expect(userProfile.email).toEqual(email);
+    expect(userProfile.displayName).toEqual(displayName);
     expect(userProfile.bio).toEqual(bio);
     expect(userProfile.image).toEqual(image);
     expect(userProfile.token).toBeDefined();
