@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import App from "./components/App";
 import Home from "./components/Home";
@@ -44,69 +44,73 @@ ReactDOM.render(
     <CookiesProvider>
       <BrowserRouter>
         <App>
-          <Route
-            path="/"
-            exact
-            render={props => <Home {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/contact"
-            render={props => <Contact {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/login"
-            render={props => (
-              <Login
-                {...props}
-                onMount={skipIfAuthenticated}
-                onUnmount={clearMessages}
-              />
-            )}
-          />
-          <Route
-            path="/signup"
-            render={props => (
-              <Signup
-                {...props}
-                onMount={skipIfAuthenticated}
-                onUnmount={clearMessages}
-              />
-            )}
-          />
-          <Route
-            path="/account"
-            render={props => (
-              <Profile
-                {...props}
-                onMount={ensureAuthenticated}
-                onUnmount={clearMessages}
-              />
-            )}
-          />
-          <Route
-            path="/forgot"
-            render={props => (
-              <Forgot
-                {...props}
-                onMount={skipIfAuthenticated}
-                onUnmount={clearMessages}
-              />
-            )}
-          />
-          <Route
-            path="/reset/:token"
-            render={props => (
-              <Reset
-                {...props}
-                onMount={skipIfAuthenticated}
-                onUnmount={clearMessages}
-              />
-            )}
-          />
-          <Route
-            path="*"
-            render={props => <NotFound {...props} onUnmount={clearMessages} />}
-          />
+          <Switch>
+            <Route
+              path="/"
+              exact
+              render={props => <Home {...props} onUnmount={clearMessages} />}
+            />
+            <Route
+              path="/contact"
+              render={props => <Contact {...props} onUnmount={clearMessages} />}
+            />
+            <Route
+              path="/login"
+              render={props => (
+                <Login
+                  {...props}
+                  onMount={skipIfAuthenticated}
+                  onUnmount={clearMessages}
+                />
+              )}
+            />
+            <Route
+              path="/signup"
+              render={props => (
+                <Signup
+                  {...props}
+                  onMount={skipIfAuthenticated}
+                  onUnmount={clearMessages}
+                />
+              )}
+            />
+            <Route
+              path="/account"
+              render={props => (
+                <Profile
+                  {...props}
+                  onMount={ensureAuthenticated}
+                  onUnmount={clearMessages}
+                />
+              )}
+            />
+            <Route
+              path="/forgot"
+              render={props => (
+                <Forgot
+                  {...props}
+                  onMount={skipIfAuthenticated}
+                  onUnmount={clearMessages}
+                />
+              )}
+            />
+            <Route
+              path="/reset/:token"
+              render={props => (
+                <Reset
+                  {...props}
+                  onMount={skipIfAuthenticated}
+                  onUnmount={clearMessages}
+                />
+              )}
+            />
+            <Route
+              path="*"
+              render={props => (
+                <NotFound {...props} onUnmount={clearMessages} />
+              )}
+            />
+          </Switch>
         </App>
       </BrowserRouter>
     </CookiesProvider>
