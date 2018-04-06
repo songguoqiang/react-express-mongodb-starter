@@ -163,14 +163,14 @@ describe("Setting and validation of password field on User model", () => {
 
   it("should save user passwords into hash and salt fields of User model", async () => {
     expect(user.salt).toBeUndefined();
-    expect(user.hash).toBeUndefined();
+    expect(user.hashedPassword).toBeUndefined();
 
     user.setPassword(password);
 
     expect(user.salt).toBeDefined();
     expect(user.salt).not.toBeNull();
-    expect(user.hash).toBeDefined();
-    expect(user.hash).not.toBeNull();
+    expect(user.hashedPassword).toBeDefined();
+    expect(user.hashedPassword).not.toBeNull();
   });
 
   it("should be able to verify user password afterwards", () => {

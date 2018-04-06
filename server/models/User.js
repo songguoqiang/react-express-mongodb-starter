@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema(
     },
     bio: String,
     image: String,
-    hash: String,
+    hashedPassword: String,
     salt: String
   },
   { timestamps: true }
@@ -34,11 +34,11 @@ UserSchema.plugin(uniqueValidator, { message: "should be unique" });
 
 UserSchema.methods.setPassword = function(password) {
   this.salt = generateSalt();
-  this.hash = hashPassword(password, this.salt);
+  this.hashedPassword = hashPassword(password, this.salt);
 };
 
 UserSchema.methods.validPassword = function(password) {
-  return this.hash === hashPassword(password, this.salt);
+  return this.hashedPassword === hashPassword(password, this.salt);
 };
 
 UserSchema.methods.generateJWT = function() {
@@ -81,7 +81,7 @@ UserSchema.methods.getProfile = function(currentUserInSession) {
     bio: this.bio,
     image:
       this.image || "https://static.productionready.io/images/smiley-cyrus.jpg",
-    following: false 
+    following: false
   };
 };
 
