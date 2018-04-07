@@ -95,11 +95,6 @@ class Header extends React.Component {
                   Home
                 </NavLink>
               </li>
-              <li>
-                <NavLink to="/contact" activeStyle={active}>
-                  Contact
-                </NavLink>
-              </li>
             </ul>
             {rightNav}
           </div>

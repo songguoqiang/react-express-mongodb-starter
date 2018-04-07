@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import App from "./components/App";
 import Home from "./components/Home";
-import Contact from "./components/Contact";
 import NotFound from "./components/NotFound";
 import Login from "./components/Account/Login";
 import Signup from "./components/Account/Signup";
@@ -57,10 +56,6 @@ ReactDOM.render(
             path="/"
             exact
             render={props => <Home {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/contact"
-            render={props => <Contact {...props} onUnmount={clearMessages} />}
           />
           <Route
             path="/login"
