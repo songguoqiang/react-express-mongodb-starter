@@ -42,7 +42,7 @@ class Reset extends React.Component {
       resetPassword({
         password: this.state.password,
         confirm: this.state.confirm,
-        token: this.props.params.token,
+        token: this.props.match.params.token,
         history: this.props.history
       })
     );

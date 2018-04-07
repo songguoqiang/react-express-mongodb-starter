@@ -7,6 +7,16 @@ router.post("/users/signup", handleAsyncError(userMiddleware.registerNewUser));
 
 router.post("/users/login", userMiddleware.login);
 
+router.post(
+  "/user/forgot-password",
+  handleAsyncError(userMiddleware.sendPasswordResetEmail)
+);
+
+router.post(
+  "/user/reset-password/:token",
+  handleAsyncError(userMiddleware.resetPassword)
+);
+
 router.get(
   "/user",
   jwt.required,

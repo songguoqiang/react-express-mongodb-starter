@@ -38,6 +38,26 @@ In the `server` directory, you need to add one `.env` file.
 
 You can follow the example in `.env.example` file.
 
+- PORT
+  - This is the port number that the server listens on
+- FRONTEND_PORT
+  - This is the port number that the frontend web server listens on. You only need to set this when you run this application locally
+- SYSTEM_EMAIL_ADDRESS
+  - This is the email address to be used as from-address when the application sends emails to users
+- APPLICATION_NAME
+  - This is the name of your application
+- NODE_ENV
+  - This needs to be set to 'production' in your production deployment environment. Set it to 'local' when you run the server locally.
+- MONGODB_URI
+  - If you run the server locally, you need to set this to your local MongoDB instance URI.
+  - In Heroku, This should have been automatically set by Heroku when you add an `mLab` add-on
+- SECRET
+  - You need to choose a random secret to sign JWT tokens during authentication
+- MAILGUN_API_KEY
+  - To send emails via MAILGUN service, you need to register one account on MAILGUN and get an API key
+- MAILGUN_DOMAIN
+  - This is your MAILGUN domain (you can find it at https://app.mailgun.com/app/domains)
+
 ## Start both client and server locally
 
 ```shell
@@ -58,18 +78,7 @@ You can follow the steps below to deploy this application to Heroku.
 
 3. configure environment variables in Heroku application settings
 
-You need to configure the environment variables you have put in the `server/.env` file:
-
-- NODE_ENV
-  - This needs to be set to 'production'
-- MONGODB_URI
-  - This should have been automatically set by Heroku when you add an `mLab` add-on
-- SECRET
-  - You need to choose a random secret to sign JWT tokens during authentication
-- MAILGUN_API_KEY
-  - To send emails via MAILGUN service, you need to register one account on MAILGUN and get an API key
-- MAILGUN_DOMAIN
-  - This is your MAILGUN domain (you can find it at https://app.mailgun.com/app/domains)
+You need to configure the environment variables you have put in the `server/.env` file, except for `PORT` and `FRONTEND_PORT`
 
 4. deploy the application
 
@@ -95,6 +104,8 @@ heroku config:set NODE_ENV=production
 heroku config:set SECRET=choose_your_secret_for_jwt_token_signing
 heroku config:set MAILGUN_API_KEY=your_mailgun_api_key
 heroku config:set MAILGUN_DOMAIN=your_mailgun_domain
+heroku config:set SYSTEM_EMAIL_ADDRESS=no-reploy@yourdomain.com
+heroku config:set APPLICATION_NAME=yourdomain.com
 
 // push our code to heroku.  This step will take the longest
 git push heroku master
