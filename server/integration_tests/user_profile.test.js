@@ -33,7 +33,7 @@ describe("User profile", () => {
 
     let response = await request(app)
       .get("/api/profiles/tom")
-      .set("Authorization", "Token " + jwtToken);
+      .set("Authorization", "Bearer " + jwtToken);
     expect(response.status).toBe(200);
 
     let userProfile = response.body.profile;

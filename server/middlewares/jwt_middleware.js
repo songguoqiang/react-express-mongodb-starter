@@ -4,7 +4,7 @@ const secret = require("../config").secret;
 function getTokenFromHeader(req) {
   const authHeader = req.headers.authorization;
 
-  if (authHeader && authHeader.split(" ")[0] === "Token") {
+  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
     return authHeader.split(" ")[1];
   }
 

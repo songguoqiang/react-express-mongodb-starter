@@ -46,7 +46,7 @@ describe("Accessing User API after login", () => {
   test("Get information on the current user", async () => {
     let response = await request(app)
       .get("/api/user")
-      .set("Authorization", "Token " + jwtToken);
+      .set("Authorization", "Bearer " + jwtToken);
     let userJson = response.body.user;
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
@@ -62,7 +62,7 @@ describe("Accessing User API after login", () => {
     let response = await request(app)
       .put("/api/user")
       .send({ user: updatedUser })
-      .set("Authorization", "Token " + jwtToken);
+      .set("Authorization", "Bearer " + jwtToken);
 
     let userJson = response.body.user;
     expect(response.statusCode).toBe(200);
@@ -74,7 +74,7 @@ describe("Accessing User API after login", () => {
     let response = await request(app)
       .put("/api/user")
       .send({})
-      .set("Authorization", "Token " + jwtToken);
+      .set("Authorization", "Bearer " + jwtToken);
     expect(response.statusCode).toBe(422);
   });
 });
