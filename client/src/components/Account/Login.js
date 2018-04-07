@@ -3,12 +3,10 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../../actions/auth";
 import Messages from "../Messages";
-import { withCookies, Cookies } from "react-cookie";
 import { instanceOf, object, func } from "prop-types";
 
 class Login extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
     history: object.isRequired,
     messages: object.isRequired,
     onMount: func.isRequired,
@@ -38,8 +36,7 @@ class Login extends React.Component {
       login({
         email: this.state.email,
         password: this.state.password,
-        history: this.props.history,
-        cookies: this.props.cookies
+        history: this.props.history
       })
     );
   }
@@ -105,4 +102,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withCookies(Login));
+export default connect(mapStateToProps)(Login);

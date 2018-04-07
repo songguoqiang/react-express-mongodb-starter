@@ -7,7 +7,6 @@ import {
 } from "../../actions/auth";
 import Messages from "../Messages";
 import { string, object, func } from "prop-types";
-import { withCookies } from "react-cookie";
 
 class Profile extends React.Component {
   static propTypes = {
@@ -64,8 +63,7 @@ class Profile extends React.Component {
     this.props.dispatch(
       deleteAccount({
         token: this.props.token,
-        history: this.props.history,
-        cookies: this.props.cookies
+        history: this.props.history
       })
     );
   }
@@ -213,4 +211,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withCookies(Profile));
+export default connect(mapStateToProps)(Profile);

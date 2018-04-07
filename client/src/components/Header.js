@@ -2,13 +2,11 @@ import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
-import { withCookies, Cookies } from "react-cookie";
 import { withRouter } from "react-router";
 import { instanceOf, object, shape, string } from "prop-types";
 
 class Header extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
     history: object.isRequired,
     user: shape({
       picture: string,
@@ -22,9 +20,7 @@ class Header extends React.Component {
 
   handleLogout(event) {
     event.preventDefault();
-    this.props.dispatch(
-      logout({ history: this.props.history, cookies: this.props.cookies })
-    );
+    this.props.dispatch(logout({ history: this.props.history }));
   }
 
   render() {
@@ -117,4 +113,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps)(withCookies(Header)));
+export default withRouter(connect(mapStateToProps)(Header));

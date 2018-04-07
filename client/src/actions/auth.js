@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export function login({ email, password, history, cookies }) {
+export function login({ email, password, history }) {
   return dispatch => {
     dispatch({
       type: "CLEAR_MESSAGES"
@@ -22,11 +22,6 @@ export function login({ email, password, history, cookies }) {
             token: json.token,
             user: json.user
           });
-          cookies.set("token", json.token, {
-            expires: moment()
-              .add(1, "hour")
-              .toDate()
-          });
           history.push("/account");
         });
       } else {
@@ -41,7 +36,7 @@ export function login({ email, password, history, cookies }) {
   };
 }
 
-export function signup({ name, email, password, history, cookies }) {
+export function signup({ name, email, password, history }) {
   return dispatch => {
     dispatch({
       type: "CLEAR_MESSAGES"
@@ -65,11 +60,6 @@ export function signup({ name, email, password, history, cookies }) {
             user: json.user
           });
           history.push("/");
-          cookies.set("token", json.token, {
-            expires: moment()
-              .add(1, "hour")
-              .toDate()
-          });
         } else {
           dispatch({
             type: "SIGNUP_FAILURE",
@@ -81,8 +71,7 @@ export function signup({ name, email, password, history, cookies }) {
   };
 }
 
-export function logout({ history, cookies }) {
-  cookies.remove("token");
+export function logout({ history }) {
   history.push("/");
   return {
     type: "LOGOUT_SUCCESS"
@@ -236,7 +225,7 @@ export function changePassword({ password, confirm, token }) {
   };
 }
 
-export function deleteAccount({ history, cookies, token }) {
+export function deleteAccount({ history, token }) {
   return dispatch => {
     dispatch({
       type: "CLEAR_MESSAGES"
@@ -250,7 +239,7 @@ export function deleteAccount({ history, cookies, token }) {
     }).then(response => {
       if (response.ok) {
         return response.json().then(json => {
-          dispatch(logout({ history, cookies }));
+          dispatch(logout({ history }));
           dispatch({
             type: "DELETE_ACCOUNT_SUCCESS",
             messages: [json]

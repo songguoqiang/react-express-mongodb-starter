@@ -2,13 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { signup } from "../../actions/auth";
-import { withCookies, Cookies } from "react-cookie";
 import { instanceOf, object, func } from "prop-types";
 import Messages from "../Messages";
 
 class Signup extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
     history: object.isRequired,
     messages: object.isRequired,
     onMount: func.isRequired,
@@ -39,8 +37,7 @@ class Signup extends React.Component {
         name: this.state.name,
         email: this.state.email,
         password: this.state.password,
-        history: this.props.history,
-        cookies: this.props.cookies
+        history: this.props.history
       })
     );
   }
@@ -119,4 +116,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withCookies(Signup));
+export default connect(mapStateToProps)(Signup);
