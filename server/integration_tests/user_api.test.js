@@ -1,4 +1,4 @@
-process.env.NODE_ENV = "integration";
+process.env.NODE_ENV = "test";
 
 const testDB = require("../test_helper/in_memory_mongodb_setup");
 const fixtureLoader = require("../test_helper/fixtures");

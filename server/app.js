@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const express = require("express"),
   bodyParser = require("body-parser"),
   cors = require("cors"),
@@ -8,7 +6,11 @@ const express = require("express"),
 
 const path = require("path");
 
-const isProduction = process.env.NODE_ENV === "production";
+const {
+  isProduction,
+  isMongooseConnectionProvided,
+  dbUri
+} = require("./config");
 
 // Create global app object
 const app = express();
@@ -32,9 +34,8 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 
-const isMongooseConnectionProvided = process.env.NODE_ENV === "integration";
 if (!isMongooseConnectionProvided) {
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect(dbUri);
   if (!isProduction) {
     mongoose.set("debug", true);
   }

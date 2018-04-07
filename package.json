@@ -12,7 +12,7 @@
       "concurrently --kill-others-on-fail \"yarn start:dev:server\" \"yarn start:client\"",
     "start:prod:server": "cd server && yarn start",
     "start:client": "cd client && yarn start",
-    "start:dev:server": "cd server && yarn start:dev"
+    "start:dev:server": "cd server && yarn dev"
   },
   "engines": {
     "node": "9.3.0",

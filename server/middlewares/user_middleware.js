@@ -2,6 +2,12 @@ const User = require("../models/User");
 const passport = require("passport");
 const random = require("../utils/crypto_promise");
 const mailer = require("../utils/email_service");
+const {
+  isLocal,
+  frontendPort,
+  systemEmailAddress,
+  applicationName
+} = require("../config");
 
 async function registerNewUser(req, res) {
   const userFoundByEmail = await User.findOne({ email: req.body.user.email });
@@ -101,8 +107,8 @@ async function deleteCurrentUser(req, res) {
 }
 
 function getHostAndPort(req) {
-  if (process.env.NODE_ENV === "local") {
-    return "localhost:" + process.env.FRONTEND_PORT;
+  if (isLocal) {
+    return "localhost:" + frontendPort;
   } else {
     return req.headers.host;
   }
@@ -122,8 +128,8 @@ async function sendPasswordResetEmail(req, res) {
   user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
   await user.save();
 
-  const fromAddress = process.env.SYSTEM_EMAIL_ADDRESS;
-  const subject = "Reset Your Password for " + process.env.APPLICATION_NAME;
+  const fromAddress = systemEmailAddress;
+  const subject = "Reset Your Password for " + applicationName;
   const text =
     "You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n" +
     "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
@@ -159,9 +165,8 @@ async function resetPassword(req, res) {
   await user.save();
 
   const toAddress = user.email;
-  const fromAddress = process.env.SYSTEM_EMAIL_ADDRESS;
-  const subject =
-    "Your Password for " + process.env.APPLICATION_NAME + " has been changed";
+  const fromAddress = systemEmailAddress;
+  const subject = "Your Password for " + applicationName + " has been changed";
   const text =
     "Hello,\n\n" +
     "This is a confirmation that the password for your account " +
