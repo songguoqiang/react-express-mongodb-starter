@@ -51,7 +51,7 @@ export function signup({ name, email, password, history, cookies }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         user: {
-          username: name,
+          name: name,
           email: email,
           password: password
         }

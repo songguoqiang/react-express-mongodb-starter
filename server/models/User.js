@@ -8,14 +8,6 @@ const secret = require("../config").secret;
 
 const UserSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      lowercase: true,
-      unique: true,
-      required: [true, "cannot be blank"],
-      match: [/^[a-zA-Z0-9]+$/, "is invalid"],
-      index: true
-    },
     email: {
       type: String,
       lowercase: true,
@@ -24,8 +16,8 @@ const UserSchema = new mongoose.Schema(
       match: [/\S+@\S+\.\S+/, "is invalid"],
       index: true
     },
-    displayName: String,
-    bio: String,
+    name: String,
+    picture: String,
     hashedPassword: String,
     passwordResetToken: String,
     passwordResetExpires: Date
@@ -53,7 +45,8 @@ UserSchema.methods.generateJWT = function() {
   return jwt.sign(
     {
       userid: this._id,
-      username: this.username,
+      name: this.name,
+      email: this.email,
       exp: parseInt(exp.getTime() / 1000)
     },
     secret
@@ -82,18 +75,9 @@ UserSchema.methods.getGravatar = function() {
 
 UserSchema.methods.toJSON = function() {
   return {
-    username: this.username,
+    name: this.name,
     email: this.email,
-    displayName: this.displayName,
-    bio: this.bio,
-    gravatar: this.getGravatar()
-  };
-};
-
-UserSchema.methods.getProfile = function(currentUserInSession) {
-  return {
-    username: this.username,
-    bio: this.bio,
+    picture: this.picture,
     gravatar: this.getGravatar()
   };
 };

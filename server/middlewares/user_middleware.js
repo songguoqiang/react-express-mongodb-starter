@@ -10,19 +10,9 @@ async function registerNewUser(req, res) {
     });
   }
 
-  const userFoundByName = await User.findOne({
-    username: req.body.user.username
-  });
-  if (userFoundByName) {
-    return res.status(422).send({
-      msg:
-        "The user name you have entered is already associated with another account."
-    });
-  }
-
   var user = new User();
 
-  user.username = req.body.user.username;
+  user.name = req.body.user.name;
   user.email = req.body.user.email;
   user.setPassword(req.body.user.password);
 
@@ -69,7 +59,7 @@ async function updateCurrentUser(req, res) {
       errors: { "user profile": "User profile information is not given." }
     });
   }
-  ["email", "username", "bio", "displayName"].forEach(detail => {
+  ["email", "name", "picture"].forEach(detail => {
     if (newUserProfile[detail]) {
       user[detail] = newUserProfile[detail];
     }
@@ -83,14 +73,9 @@ async function updateCurrentUser(req, res) {
   return res.json({ user: user.toJSON() });
 }
 
-async function resolveUsername(username) {
-  return await User.findOne({ username: username });
-}
-
 module.exports = {
   registerNewUser,
   login,
   getCurrentUser,
-  updateCurrentUser,
-  resolveUsername
+  updateCurrentUser
 };

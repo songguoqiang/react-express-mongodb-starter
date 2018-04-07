@@ -7,11 +7,11 @@ afterAll(test_mongodb.teardown);
 const User = require("./User");
 
 describe("User model", () => {
-  const username = "kevin";
+  const name = "kevin";
   const email = "kevin@example.com";
   const newEmail = "gordon@example.com";
 
-  let user = new User({ username, email });
+  let user = new User({ name, email });
 
   it("can be saved", async () => {
     await expect(user.save()).resolves.toBe(user);
@@ -24,19 +24,19 @@ describe("User model", () => {
 
   it("can be searched by _id", async () => {
     let searchResult = await User.findById(user._id);
-    expect(searchResult.username).toEqual(username);
+    expect(searchResult.name).toEqual(name);
     expect(searchResult.email).toEqual(email);
   });
 
-  it("can be searched by username", async () => {
-    let searchResult = await User.findOne({ username });
-    expect(searchResult.username).toEqual(username);
+  it("can be searched by name", async () => {
+    let searchResult = await User.findOne({ name });
+    expect(searchResult.name).toEqual(name);
     expect(searchResult.email).toEqual(email);
   });
 
   it("can be searched by email", async () => {
     let searchResult = await User.findOne({ email });
-    expect(searchResult.username).toEqual(username);
+    expect(searchResult.name).toEqual(name);
     expect(searchResult.email).toEqual(email);
   });
 
@@ -54,81 +54,97 @@ describe("User model", () => {
   });
 });
 
-describe("Unique fields in User model", () => {
-  const username1 = "kevin";
+describe("Users have unique emails", () => {
+  const name1 = "kevin";
   const email1 = "kevin@example.com";
 
-  const username2 = "gordon";
+  const name2 = "gordon";
   const email2 = "gordon@example.com";
 
-  let user1 = new User({ username: username1, email: email1 });
+  let user1 = new User({ name: name1, email: email1 });
 
   beforeEach(async () => await user1.save());
 
-  it("should not allow two users with the same name", async () => {
-    let userWithSameName = new User({ username: username1, email: email2 });
-    await expect(userWithSameName.save()).rejects.toThrow(ValidationError);
-  });
-
-  it("should not allow two users with the email", async () => {
-    let userWithSameEmail = new User({ username: username2, email: email1 });
+  it("should not allow two users with the same email", async () => {
+    let userWithSameEmail = new User({ name: name2, email: email1 });
     await expect(userWithSameEmail.save()).rejects.toThrow(ValidationError);
   });
 
-  it("should allow to create another user with unique name and email", async () => {
-    let uniqueUser = new User({ username: username2, email: email2 });
+  it("should allow to create another user with unique email", async () => {
+    let uniqueUser = new User({ name: name2, email: email2 });
     await expect(uniqueUser.save()).resolves.toBe(uniqueUser);
   });
 });
 
+describe("Two different users can have same names", () => {
+  const name1 = "thomas";
+  const email1 = "thomas@example.com";
+
+  const email2 = "ben@example.com";
+
+  let user1 = new User({ name: name1, email: email1 });
+
+  beforeEach(async () => await user1.save());
+
+  it("can allow two users with the same name", async () => {
+    let userWithSameName = new User({ name: name1, email: email2 });
+    await expect(userWithSameName.save()).resolves.toBe(userWithSameName);
+  });
+});
+
+describe("The User model has some required fields", () => {
+  const name1 = "peter";
+
+  test("email is required", async () => {
+    let userWithoutEmail = new User({
+      name: name1
+    });
+    await expect(userWithoutEmail.save()).rejects.toThrow(ValidationError);
+  });
+});
+
 describe("Users can have some optional attributes", () => {
-  const username = "david";
   const email = "david@example.com";
 
   let user = new User({
-    username: username,
     email: email
   });
 
   beforeEach(async () => await user.save());
 
-  it("can have optional displayName field", async () => {
-    const displayName = "David Kok";
-    user.displayName = displayName;
+  it("can have optional name field", async () => {
+    user.name = "david";
     const savedUser = await user.save();
-    expect(savedUser.displayName).toEqual(displayName);
+    expect(savedUser.name).toEqual("david");
   });
 
-  test("the displayName field should be strings", async () => {
-    user.displayName = {};
+  it("can have optional picture field", async () => {
+    const picture = "http://location-of-my-picture.jpg";
+    user.picture = picture;
+    const savedUser = await user.save();
+    expect(savedUser.picture).toEqual(picture);
+  });
+
+  test("the picture field should be strings", async () => {
+    user.picture = {};
     await expect(user.save()).rejects.toThrow(ValidationError);
   });
 });
 
 describe("Some fields in User model are case insensitive", () => {
-  const username1 = "joe";
+  const name1 = "joe";
   const email1 = "joe@example.com";
 
-  const username2 = "jack";
+  const name2 = "jack";
   const email2 = "jack@example.com";
 
-  let user1 = new User({ username: username1, email: email1 });
+  let user1 = new User({ name: name1, email: email1 });
 
   beforeEach(async () => await user1.save());
 
-  test("username is case insensitive", async () => {
-    let userWithSameNameButDifferentCase = new User({
-      username: username1.toUpperCase(),
-      email: email2
-    });
-    await expect(userWithSameNameButDifferentCase.save()).rejects.toThrow(
-      ValidationError
-    );
-  });
-
   test("email is case insensitive", async () => {
     let userWithSameEmailButDifferentCase = new User({
-      username: username2,
+      name: name2,
       email: email1.toUpperCase()
     });
     await expect(userWithSameEmailButDifferentCase.save()).rejects.toThrow(
@@ -137,37 +153,10 @@ describe("Some fields in User model are case insensitive", () => {
   });
 });
 
-describe("Some of the fields in User model are required", () => {
-  const username1 = "peter";
-  const email1 = "peter@example.com";
-
-  test("username is required", async () => {
-    let userWithoutName = new User({
-      email: email1
-    });
-    await expect(userWithoutName.save()).rejects.toThrow(ValidationError);
-  });
-
-  test("email is required", async () => {
-    let userWithoutEmail = new User({
-      username: username1
-    });
-    await expect(userWithoutEmail.save()).rejects.toThrow(ValidationError);
-  });
-});
-
 describe("Some of the fields in User Model have required format", () => {
-  test("username can only contain alphanumeric alphabets", async () => {
-    let userWithInvalidName = new User({
-      username: "Tom_Peter", // _ is not allowed here
-      email: "myemail@example.com"
-    });
-    await expect(userWithInvalidName.save()).rejects.toThrow(ValidationError);
-  });
-
   test("email should follow the normal email format", async () => {
     let userWithInvalidEmail = new User({
-      username: "jessie",
+      name: "jessie",
       email: "myemailexample.com" // missing @
     });
     await expect(userWithInvalidEmail.save()).rejects.toThrow(ValidationError);
@@ -175,11 +164,11 @@ describe("Some of the fields in User Model have required format", () => {
 });
 
 describe("Setting and validation of password field on User model", () => {
-  const username = "kate";
+  const name = "kate";
   const email = "kate@example.com";
   const password = "mypassword";
 
-  let user = new User({ username, email });
+  let user = new User({ name, email });
 
   beforeEach(async () => {
     await user.save();
@@ -200,10 +189,10 @@ describe("Setting and validation of password field on User model", () => {
 });
 
 describe("JWT tokens", () => {
-  const username = "jeff";
+  const name = "jeff";
   const email = "jeff@example.com";
 
-  let user = new User({ username, email });
+  let user = new User({ name, email });
 
   beforeEach(async () => {
     await user.save();
@@ -213,18 +202,17 @@ describe("JWT tokens", () => {
     expect(user.verifyJWT(token)).toBeTruthy();
   });
 
-  test("invalid JWT toekns cannot be verified", () => {
+  test("invalid JWT tokens cannot be verified", () => {
     expect(user.verifyJWT("invalid token")).toBeFalsy();
   });
 });
 
 describe("Generate user profile as JSON", () => {
-  const username = "luke";
+  const name = "luke";
   const email = "luke@example.com";
-  const displayName = "Luke Walker";
-  const bio = "user bio";
+  const picture = "user picture";
 
-  let user = new User({ username, email, displayName, bio });
+  let user = new User({ name, email, picture });
 
   beforeEach(async () => {
     await user.save();
@@ -232,10 +220,9 @@ describe("Generate user profile as JSON", () => {
 
   it("should exclude JWT token in the response, if a request is neither for login nor sign up", () => {
     const userProfile = user.toJSON();
-    expect(userProfile.username).toEqual(username);
+    expect(userProfile.name).toEqual(name);
     expect(userProfile.email).toEqual(email);
-    expect(userProfile.displayName).toEqual(displayName);
-    expect(userProfile.bio).toEqual(bio);
+    expect(userProfile.picture).toEqual(picture);
     expect(userProfile.gravatar).toBeDefined();
     expect(userProfile.passwordResetToken).not.toBeDefined();
   });

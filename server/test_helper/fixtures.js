@@ -3,9 +3,9 @@ const User = require("../models/User");
 
 const fixtures = {};
 
-function getNewUser(username, email, password) {
+function getNewUser(name, email, password) {
   const user = new User({
-    username,
+    name,
     email
   });
   user.setPassword(password);

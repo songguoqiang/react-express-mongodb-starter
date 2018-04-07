@@ -13,43 +13,30 @@ afterAll(testDB.teardown);
 
 describe("New user registration", () => {
   test("Register a new user successfully", async () => {
-    const username = "luke";
+    const name = "luke";
     const email = "luke@example.com";
     const password = "mypassword";
 
     let response = await request(app)
       .post("/api/users/signup")
-      .send({ user: { username, email, password } });
+      .send({ user: { name, email, password } });
     let userJson = response.body.user;
     let jwtToken = response.body.token;
 
     expect(response.statusCode).toBe(200);
     expect(userJson).toBeDefined();
-    expect(userJson.username).toEqual(username);
+    expect(userJson.name).toEqual(name);
     expect(userJson.email).toEqual(email);
     expect(jwtToken).toBeDefined();
   });
 
-  test("Register with duplicated username should fail", async () => {
-    const username = fixtures.users.tom.username;
-    const email = "random@example.com";
-    const password = "mypassword";
-    let response = await request(app)
-      .post("/api/users/signup")
-      .send({ user: { username, email, password } });
-
-    expect(response.statusCode).toBe(422);
-    const message = response.body.msg;
-    expect(message).toMatch(/user name/);
-  });
-
   test("Register with duplicated email should fail", async () => {
-    const username = "randomusername";
+    const name = "randomname";
     const email = fixtures.users.tom.email;
     const password = "mypassword";
     let response = await request(app)
       .post("/api/users/signup")
-      .send({ user: { username, email, password } });
+      .send({ user: { name, email, password } });
 
     expect(response.statusCode).toBe(422);
     const message = response.body.msg;
