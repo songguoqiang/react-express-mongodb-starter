@@ -236,7 +236,7 @@ export function changePassword({ password, confirm, token }) {
   };
 }
 
-export function deleteAccount({ token }) {
+export function deleteAccount({ history, cookies, token }) {
   return dispatch => {
     dispatch({
       type: "CLEAR_MESSAGES"
@@ -250,7 +250,7 @@ export function deleteAccount({ token }) {
     }).then(response => {
       if (response.ok) {
         return response.json().then(json => {
-          dispatch(logout());
+          dispatch(logout({ history, cookies }));
           dispatch({
             type: "DELETE_ACCOUNT_SUCCESS",
             messages: [json]

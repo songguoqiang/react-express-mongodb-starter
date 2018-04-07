@@ -7,13 +7,15 @@ import {
 } from "../../actions/auth";
 import Messages from "../Messages";
 import { string, object, func } from "prop-types";
+import { withCookies } from "react-cookie";
 
 class Profile extends React.Component {
   static propTypes = {
     token: string.isRequired,
     messages: object.isRequired,
     onMount: func.isRequired,
-    onUnmount: func.isRequired
+    onUnmount: func.isRequired,
+    history: object.isRequired
   };
 
   constructor(props) {
@@ -59,7 +61,13 @@ class Profile extends React.Component {
 
   handleDeleteAccount(event) {
     event.preventDefault();
-    this.props.dispatch(deleteAccount({ token: this.props.token }));
+    this.props.dispatch(
+      deleteAccount({
+        token: this.props.token,
+        history: this.props.history,
+        cookies: this.props.cookies
+      })
+    );
   }
 
   render() {
@@ -205,4 +213,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps)(withCookies(Profile));

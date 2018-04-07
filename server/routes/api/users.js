@@ -19,4 +19,10 @@ router.put(
   handleAsyncError(userMiddleware.updateCurrentUser)
 );
 
+router.delete(
+  "/user",
+  jwt.required,
+  handleAsyncError(userMiddleware.deleteCurrentUser)
+);
+
 module.exports = router;

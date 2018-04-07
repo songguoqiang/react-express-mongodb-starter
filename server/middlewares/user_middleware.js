@@ -90,9 +90,18 @@ async function updateCurrentUser(req, res) {
   }
 }
 
+async function deleteCurrentUser(req, res) {
+  const userId = req.jwt.userid;
+  await User.remove({ _id: userId });
+  return res.json({
+    msg: "Your account is deleted successfully."
+  });
+}
+
 module.exports = {
   registerNewUser,
   login,
   getCurrentUser,
-  updateCurrentUser
+  updateCurrentUser,
+  deleteCurrentUser
 };
