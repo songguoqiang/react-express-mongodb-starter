@@ -29,7 +29,7 @@ class Home extends React.Component {
                   nibh, ut fermentum massa justo sit amet risus. Etiam porta sem
                   malesuada magna mollis euismod. Donec sed odio dui.
                 </p>
-                <a href="#" role="button" className="btn btn-default">
+                <a href="about:blank" role="button" className="btn btn-default">
                   View details
                 </a>
               </div>
@@ -45,7 +45,7 @@ class Home extends React.Component {
                   nibh, ut fermentum massa justo sit amet risus. Etiam porta sem
                   malesuada magna mollis euismod. Donec sed odio dui.
                 </p>
-                <a href="#" role="button" className="btn btn-default">
+                <a href="about:blank" role="button" className="btn btn-default">
                   View details
                 </a>
               </div>
@@ -61,7 +61,7 @@ class Home extends React.Component {
                   nibh, ut fermentum massa justo sit amet risus. Etiam porta sem
                   malesuada magna mollis euismod. Donec sed odio dui.
                 </p>
-                <a href="#" role="button" className="btn btn-default">
+                <a href="about:blank" role="button" className="btn btn-default">
                   View details
                 </a>
               </div>

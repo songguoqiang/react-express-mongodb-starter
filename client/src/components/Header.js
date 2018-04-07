@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import { withRouter } from "react-router";
-import { instanceOf, object, shape, string } from "prop-types";
+import { object, shape, string } from "prop-types";
 
 class Header extends React.Component {
   static propTypes = {
@@ -29,11 +29,14 @@ class Header extends React.Component {
       <ul className="nav navbar-nav navbar-right">
         <li className="dropdown">
           <a
-            href="#"
+            href="about:blank"
             data-toggle="dropdown"
             className="navbar-avatar dropdown-toggle"
           >
-            <img src={this.props.user.picture || this.props.user.gravatar} />{" "}
+            <img
+              alt="avatar"
+              src={this.props.user.picture || this.props.user.gravatar}
+            />{" "}
             {this.props.user.name ||
               this.props.user.email ||
               this.props.user.id}{" "}
@@ -45,7 +48,7 @@ class Header extends React.Component {
             </li>
             <li className="divider" />
             <li>
-              <a href="#" onClick={this.handleLogout.bind(this)}>
+              <a href="about:blank" onClick={this.handleLogout.bind(this)}>
                 Logout
               </a>
             </li>
