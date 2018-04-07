@@ -37,6 +37,7 @@ test("Change password on the current user", async () => {
     .set("Authorization", "Bearer " + jwtToken);
 
   expect(response.statusCode).toBe(200);
+  expect(response.body.msg).toMatch(/Your password is changed successfully/);
 
   await loginAsTom(newPassword);
 });

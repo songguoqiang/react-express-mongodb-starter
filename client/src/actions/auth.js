@@ -133,10 +133,11 @@ export function resetPassword({ password, confirm, pathToken, history }) {
     }).then(response => {
       if (response.ok) {
         return response.json().then(json => {
+          const message = json.msg;
           history.push("/login");
           dispatch({
             type: "RESET_PASSWORD_SUCCESS",
-            messages: [json]
+            messages: [message]
           });
         });
       } else {
@@ -156,18 +157,17 @@ export function updateProfile({ state, token }) {
     dispatch({
       type: "CLEAR_MESSAGES"
     });
-    return fetch("/account", {
+    return fetch("/api/user", {
       method: "put",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        email: state.email,
-        name: state.name,
-        gender: state.gender,
-        location: state.location,
-        website: state.website
+        user: {
+          email: state.email,
+          name: state.name
+        }
       })
     }).then(response => {
       if (response.ok) {
@@ -194,33 +194,45 @@ export function changePassword({ password, confirm, token }) {
     dispatch({
       type: "CLEAR_MESSAGES"
     });
-    return fetch("/account", {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        password: password,
-        confirm: confirm
-      })
-    }).then(response => {
-      if (response.ok) {
-        return response.json().then(json => {
-          dispatch({
-            type: "CHANGE_PASSWORD_SUCCESS",
-            messages: [json]
+
+    if (password !== confirm) {
+      dispatch({
+        type: "CHANGE_PASSWORD_FAILURE",
+        messages: [
+          { msg: "Your confirmed password does not match the new password" }
+        ]
+      });
+    } else {
+      return fetch("/api/user", {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          user: {
+            password: password,
+            confirm: confirm
+          }
+        })
+      }).then(response => {
+        if (response.ok) {
+          return response.json().then(json => {
+            dispatch({
+              type: "CHANGE_PASSWORD_SUCCESS",
+              messages: [json]
+            });
           });
-        });
-      } else {
-        return response.json().then(json => {
-          dispatch({
-            type: "CHANGE_PASSWORD_FAILURE",
-            messages: Array.isArray(json) ? json : [json]
+        } else {
+          return response.json().then(json => {
+            dispatch({
+              type: "CHANGE_PASSWORD_FAILURE",
+              messages: Array.isArray(json) ? json : [json]
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   };
 }
 
@@ -229,7 +241,7 @@ export function deleteAccount({ token }) {
     dispatch({
       type: "CLEAR_MESSAGES"
     });
-    return fetch("/account", {
+    return fetch("/api/user", {
       method: "delete",
       headers: {
         "Content-Type": "application/json",
@@ -242,6 +254,13 @@ export function deleteAccount({ token }) {
           dispatch({
             type: "DELETE_ACCOUNT_SUCCESS",
             messages: [json]
+          });
+        });
+      } else {
+        return response.json().then(json => {
+          dispatch({
+            type: "DELETE_ACCOUNT_FAILURE",
+            messages: Array.isArray(json) ? json : [json]
           });
         });
       }

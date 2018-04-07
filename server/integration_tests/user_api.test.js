@@ -53,7 +53,27 @@ describe("Accessing User API after login", () => {
     expect(userJson.email).toEqual(fixtures.users.tom.email);
   });
 
-  test("Update user profile", async () => {
+  test("Change name of the current user", async () => {
+    await loginAsTom(fixtures.users.tom.password);
+
+    const newName = "new-name";
+    const updatedUser = {
+      name: newName
+    };
+
+    let response = await request(app)
+      .put("/api/user")
+      .send({ user: updatedUser })
+      .set("Authorization", "Bearer " + jwtToken);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.msg).toMatch(/Your profile is updated successfully/);
+    let userJson = response.body.user;
+    expect(userJson).toBeDefined();
+    expect(userJson.name).toEqual(newName);
+  });
+
+  test("Update user picture", async () => {
     const newPicture = "new-picture";
 
     const updatedUser = {
@@ -66,8 +86,24 @@ describe("Accessing User API after login", () => {
 
     let userJson = response.body.user;
     expect(response.statusCode).toBe(200);
+    expect(response.body.msg).toMatch(/Your profile is updated successfully/);
     expect(userJson).toBeDefined();
     expect(userJson.picture).toEqual(newPicture);
+  });
+
+  test("Update user email to be the same as another existing user", async () => {
+    const newEmail = fixtures.users.jacky.email;
+
+    const updatedUser = {
+      email: newEmail
+    };
+    let response = await request(app)
+      .put("/api/user")
+      .send({ user: updatedUser })
+      .set("Authorization", "Bearer " + jwtToken);
+
+    expect(response.statusCode).toBe(422);
+    expect(response.body.msg).toMatch(/could not be updated/);
   });
 
   test("Update user profile with no user information", async () => {

@@ -56,7 +56,7 @@ async function updateCurrentUser(req, res) {
   const newUserProfile = req.body.user;
   if (!newUserProfile) {
     return res.status(422).json({
-      errors: { "user profile": "User profile information is not given." }
+      msg: "User profile information is not given."
     });
   }
   ["email", "name", "picture"].forEach(detail => {
@@ -69,8 +69,25 @@ async function updateCurrentUser(req, res) {
     user.setPassword(newUserProfile.password);
   }
 
-  await user.save();
-  return res.json({ user: user.toJSON() });
+  try {
+    await user.save();
+
+    if (newUserProfile.password) {
+      return res.json({
+        user: user.toJSON(),
+        msg: "Your password is changed successfully."
+      });
+    } else {
+      return res.json({
+        user: user.toJSON(),
+        msg: "Your profile is updated successfully."
+      });
+    }
+  } catch (err) {
+    return res.status(422).json({
+      msg: "Your profile could not be updated"
+    });
+  }
 }
 
 module.exports = {
