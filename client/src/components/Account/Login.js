@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../../actions/auth";
 import Messages from "../Messages";
-import { instanceOf, object, func } from "prop-types";
+import { object, func } from "prop-types";
 
 class Login extends React.Component {
   static propTypes = {
     history: object.isRequired,
     messages: object.isRequired,
-    onMount: func.isRequired,
-    onUnmount: func.isRequired
+    onMount: func,
+    onUnmount: func
   };
 
   constructor(props) {
@@ -19,15 +19,28 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onMount(this.props.history);
+    if (this.props.onMount) {
+      this.props.onMount(this.props.history);
+    }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
+    if (this.props.onUnmount) {
+      this.props.onUnmount(this.props.history);
+    }
   }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
+  }
+
+  getRedirectReferer() {
+    let locationState = this.props.location.state;
+    if (locationState && locationState.from) {
+      return locationState.from.pathname;
+    } else {
+      return "/";
+    }
   }
 
   handleLogin(event) {
@@ -36,7 +49,8 @@ class Login extends React.Component {
       login({
         email: this.state.email,
         password: this.state.password,
-        history: this.props.history
+        history: this.props.history,
+        from: this.getRedirectReferer()
       })
     );
   }

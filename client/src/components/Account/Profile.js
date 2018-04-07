@@ -12,8 +12,8 @@ class Profile extends React.Component {
   static propTypes = {
     token: string.isRequired,
     messages: object.isRequired,
-    onMount: func.isRequired,
-    onUnmount: func.isRequired,
+    onMount: func,
+    onUnmount: func,
     history: object.isRequired
   };
 
@@ -29,11 +29,15 @@ class Profile extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onMount(this.props.history);
+    if (this.props.onMount) {
+      this.props.onMount(this.props.history);
+    }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
+    if (this.props.onUnmount) {
+      this.props.onUnmount(this.props.history);
+    }
   }
 
   handleChange(event) {
@@ -117,6 +121,7 @@ class Profile extends React.Component {
                     width="100"
                     height="100"
                     className="profile"
+                    alt="avatar"
                   />
                 </div>
               </div>

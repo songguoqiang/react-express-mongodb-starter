@@ -1,6 +1,4 @@
-import moment from "moment";
-
-export function login({ email, password, history }) {
+export function login({ email, password, history, from }) {
   return dispatch => {
     dispatch({
       type: "CLEAR_MESSAGES"
@@ -22,7 +20,7 @@ export function login({ email, password, history }) {
             token: json.token,
             user: json.user
           });
-          history.push("/account");
+          history.replace(from);
         });
       } else {
         return response.json().then(json => {

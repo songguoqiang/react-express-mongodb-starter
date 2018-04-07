@@ -2,15 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { signup } from "../../actions/auth";
-import { instanceOf, object, func } from "prop-types";
+import { object, func } from "prop-types";
 import Messages from "../Messages";
 
 class Signup extends React.Component {
   static propTypes = {
     history: object.isRequired,
     messages: object.isRequired,
-    onMount: func.isRequired,
-    onUnmount: func.isRequired
+    onMount: func,
+    onUnmount: func
   };
 
   constructor(props) {
@@ -19,11 +19,15 @@ class Signup extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onMount(this.props.history);
+    if (this.props.onMount) {
+      this.props.onMount(this.props.history);
+    }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
+    if (this.props.onUnmount) {
+      this.props.onUnmount(this.props.history);
+    }
   }
 
   handleChange(event) {

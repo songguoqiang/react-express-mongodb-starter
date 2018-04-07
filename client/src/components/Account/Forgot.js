@@ -7,8 +7,8 @@ import { object, func } from "prop-types";
 class Forgot extends React.Component {
   static propTypes = {
     messages: object.isRequired,
-    onMount: func.isRequired,
-    onUnmount: func.isRequired
+    onMount: func,
+    onUnmount: func
   };
 
   constructor(props) {
@@ -17,11 +17,15 @@ class Forgot extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onMount(this.props.history);
+    if (this.props.onMount) {
+      this.props.onMount(this.props.history);
+    }
   }
 
   componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
+    if (this.props.onUnmount) {
+      this.props.onUnmount(this.props.history);
+    }
   }
 
   handleChange(event) {
