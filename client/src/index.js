@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { CookiesProvider } from "react-cookie";
 import App from "./components/App";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
@@ -51,19 +52,21 @@ const PrivateRoute = subscribe()(({ component: Component, ...rest }) => (
 
 ReactDOM.render(
   <Provider {...store}>
-    <BrowserRouter>
-      <App>
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <PrivateRoute path="/account" component={Profile} />
-          <Route path="/forgot" component={Forgot} />
-          <Route path="/reset/:token" component={Reset} />
-          <Route path="*" component={NotFound} />
-        </Switch>
-      </App>
-    </BrowserRouter>
+    <CookiesProvider>
+      <BrowserRouter>
+        <App>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+            <PrivateRoute path="/account" component={Profile} />
+            <Route path="/forgot" component={Forgot} />
+            <Route path="/reset/:token" component={Reset} />
+            <Route path="*" component={NotFound} />
+          </Switch>
+        </App>
+      </BrowserRouter>
+    </CookiesProvider>
   </Provider>,
   document.getElementById("app")
 );

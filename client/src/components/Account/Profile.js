@@ -5,7 +5,8 @@ import {
   deleteAccount
 } from "../../actions/auth";
 import Messages from "../Messages";
-import { string, object } from "prop-types";
+import { string, object, instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
   withCallbacksForMessages,
@@ -18,7 +19,8 @@ class Profile extends React.Component {
   static propTypes = {
     token: string.isRequired,
     messages: object.isRequired,
-    history: object.isRequired
+    history: object.isRequired,
+    cookies: instanceOf(Cookies).isRequired
   };
 
   constructor(props) {
@@ -64,6 +66,7 @@ class Profile extends React.Component {
     deleteAccount({
       token: this.props.token,
       history: this.props.history,
+      cookies: this.props.cookies,
       ...withCallbacksForMessages(this.props),
       ...withCallbacksForSession(this.props)
     });
@@ -212,4 +215,6 @@ const mapContextToProps = context => {
   };
 };
 
-export default subscribe(ProviderContext, mapContextToProps)(Profile);
+export default subscribe(ProviderContext, mapContextToProps)(
+  withCookies(Profile)
+);

@@ -1,5 +1,6 @@
 const express = require("express"),
   bodyParser = require("body-parser"),
+  cookieParser = require("cookie-parser"),
   cors = require("cors"),
   errorhandler = require("errorhandler"),
   mongoose = require("mongoose");
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(require("morgan")("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use(require("method-override")());
 

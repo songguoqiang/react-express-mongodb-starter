@@ -1,8 +1,9 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
+import { withCookies, Cookies } from "react-cookie";
 import { logout } from "../actions/auth";
 import { withRouter } from "react-router";
-import { object, shape, string } from "prop-types";
+import { object, shape, string, instanceOf } from "prop-types";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
   withCallbacksForSession,
@@ -12,6 +13,7 @@ import {
 class Header extends React.Component {
   static propTypes = {
     history: object.isRequired,
+    cookies: instanceOf(Cookies).isRequired,
     user: shape({
       picture: string,
       gravatar: string,
@@ -26,6 +28,7 @@ class Header extends React.Component {
     event.preventDefault();
     logout({
       history: this.props.history,
+      cookies: this.props.cookies,
       ...withCallbacksForSession(this.props)
     });
   }
@@ -116,5 +119,5 @@ const mapContextToProps = context => {
 };
 
 export default withRouter(
-  subscribe(ProviderContext, mapContextToProps)(Header)
+  subscribe(ProviderContext, mapContextToProps)(withCookies(Header))
 );

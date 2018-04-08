@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { signup } from "../../actions/auth";
-import { object } from "prop-types";
+import { object, instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 import Messages from "../Messages";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
@@ -14,6 +15,7 @@ import {
 class Signup extends React.Component {
   static propTypes = {
     history: object.isRequired,
+    cookies: instanceOf(Cookies).isRequired,
     messages: object.isRequired
   };
 
@@ -37,6 +39,7 @@ class Signup extends React.Component {
       email: this.state.email,
       password: this.state.password,
       history: this.props.history,
+      cookies: this.props.cookies,
       ...withCallbacksForMessages(this.props),
       ...withCallbacksForSession(this.props)
     });
@@ -117,4 +120,6 @@ const mapContextToProps = context => {
   };
 };
 
-export default subscribe(ProviderContext, mapContextToProps)(Signup);
+export default subscribe(ProviderContext, mapContextToProps)(
+  withCookies(Signup)
+);

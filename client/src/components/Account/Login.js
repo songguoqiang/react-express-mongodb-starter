@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { withCookies, Cookies } from "react-cookie";
 import { login } from "../../actions/auth";
 import Messages from "../Messages";
-import { object } from "prop-types";
+import { object, instanceOf } from "prop-types";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
   withCallbacksForMessages,
@@ -14,6 +15,7 @@ import {
 class Login extends React.Component {
   static propTypes = {
     history: object.isRequired,
+    cookies: instanceOf(Cookies).isRequired,
     messages: object.isRequired
   };
 
@@ -45,6 +47,7 @@ class Login extends React.Component {
       email: this.state.email,
       password: this.state.password,
       history: this.props.history,
+      cookies: this.props.cookies,
       from: this.getRedirectReferer(),
       ...withCallbacksForMessages(this.props),
       ...withCallbacksForSession(this.props)
@@ -113,4 +116,6 @@ const mapContextToProps = context => {
   };
 };
 
-export default subscribe(ProviderContext, mapContextToProps)(Login);
+export default subscribe(ProviderContext, mapContextToProps)(
+  withCookies(Login)
+);

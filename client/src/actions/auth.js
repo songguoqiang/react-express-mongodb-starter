@@ -1,7 +1,10 @@
+import moment from "moment";
+
 export function login({
   email,
   password,
   history,
+  cookies,
   from,
   clearMessages,
   saveSession,
@@ -21,6 +24,11 @@ export function login({
     if (response.ok) {
       return response.json().then(json => {
         saveSession(json.token, json.user);
+        cookies.set("token", json.token, {
+          expires: moment()
+            .add(1, "hour")
+            .toDate()
+        });
         history.replace(from);
       });
     } else {
@@ -37,6 +45,7 @@ export function signup({
   email,
   password,
   history,
+  cookies,
   clearMessages,
   setErrorMessages,
   saveSession
@@ -56,6 +65,11 @@ export function signup({
     return response.json().then(json => {
       if (response.ok) {
         saveSession(json.token, json.user);
+        cookies.set("token", json.token, {
+          expires: moment()
+            .add(1, "hour")
+            .toDate()
+        });
         history.push("/");
       } else {
         const messages = Array.isArray(json) ? json : [json];
@@ -65,7 +79,8 @@ export function signup({
   });
 }
 
-export function logout({ history, clearSession }) {
+export function logout({ history, cookies, clearSession }) {
+  cookies.remove("token");
   clearSession();
   history.push("/");
 }
@@ -214,6 +229,7 @@ export function changePassword({
 
 export function deleteAccount({
   history,
+  cookies,
   token,
   clearMessages,
   clearSession,
@@ -230,7 +246,7 @@ export function deleteAccount({
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
-        logout({ history, clearSession });
+        logout({ history, cookies, clearSession });
         setSuccessMessages([json]);
       });
     } else {
