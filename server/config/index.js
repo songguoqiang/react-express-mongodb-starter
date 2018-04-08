@@ -1,4 +1,7 @@
 const path = require("path");
+const { checkRequiredEnvironment } = require("./utils");
+
+checkRequiredEnvironment(["NODE_ENV"]);
 
 const isProduction = process.env.NODE_ENV === "production";
 const isLocal = process.env.NODE_ENV === "local";
@@ -10,18 +13,29 @@ if (isLocal) {
   require("dotenv").config({ path: path.resolve(process.cwd(), ".env.test") });
 }
 
-const isMongooseConnectionProvided = isTest;
-
-module.exports = {
+const envConfig = {
   isProduction,
   isLocal,
-  isMongooseConnectionProvided,
-  frontendPort: process.env.FRONTEND_PORT,
-  port: process.env.PORT || 3001,
-  dbUri: process.env.MONGODB_URI,
-  secret: process.env.SECRET || "secret",
-  systemEmailAddress: process.env.SYSTEM_EMAIL_ADDRESS,
-  applicationName: process.env.APPLICATION_NAME,
-  mailgunAPIKey: process.env.MAILGUN_API_KEY,
-  mailgunDomain: process.env.MAILGUN_DOMAIN
+  isTest
 };
+
+const coreConfig = require("./core");
+const mailgunConfig = require("./mailgun");
+let localConfig = {};
+if (isLocal) {
+  localConfig = require("./local");
+}
+
+let testConfig = {};
+if (isTest) {
+  testConfig = require("./tests");
+}
+
+module.exports = Object.assign(
+  {},
+  envConfig,
+  coreConfig,
+  mailgunConfig,
+  localConfig,
+  testConfig
+);
