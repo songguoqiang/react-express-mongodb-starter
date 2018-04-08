@@ -1,17 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
 import Messages from "./Messages";
-import { object, func } from "prop-types";
+import { object } from "prop-types";
+import { ProviderContext, subscribe } from "react-contextual";
+import { mapMessageContextToProps } from "../components/context_helper";
 
 class Home extends React.Component {
   static propTypes = {
     history: object.isRequired,
-    messages: object.isRequired,
-    onUnmount: func
+    messages: object.isRequired
   };
 
   componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
+    this.props.clearMessages();
   }
 
   render() {
@@ -73,10 +73,8 @@ class Home extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    messages: state.messages
-  };
+const mapContextToProps = context => {
+  return mapMessageContextToProps(context);
 };
 
-export default connect(mapStateToProps)(Home);
+export default subscribe(ProviderContext, mapContextToProps)(Home);

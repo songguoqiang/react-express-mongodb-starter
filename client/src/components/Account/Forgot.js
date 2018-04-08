@@ -1,14 +1,16 @@
 import React from "react";
-import { connect } from "react-redux";
 import { forgotPassword } from "../../actions/auth";
 import Messages from "../Messages";
-import { object, func } from "prop-types";
+import { object } from "prop-types";
+import { ProviderContext, subscribe } from "react-contextual";
+import {
+  withCallbacksForMessages,
+  mapMessageContextToProps
+} from "../context_helper";
 
 class Forgot extends React.Component {
   static propTypes = {
-    messages: object.isRequired,
-    onMount: func,
-    onUnmount: func
+    messages: object.isRequired
   };
 
   constructor(props) {
@@ -16,16 +18,8 @@ class Forgot extends React.Component {
     this.state = { email: "" };
   }
 
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount(this.props.history);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.props.onUnmount) {
-      this.props.onUnmount(this.props.history);
-    }
+    this.props.clearMessages();
   }
 
   handleChange(event) {
@@ -34,7 +28,10 @@ class Forgot extends React.Component {
 
   handleForgot(event) {
     event.preventDefault();
-    this.props.dispatch(forgotPassword({ email: this.state.email }));
+    forgotPassword({
+      email: this.state.email,
+      ...withCallbacksForMessages(this.props)
+    });
   }
 
   render() {
@@ -73,10 +70,8 @@ class Forgot extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    messages: state.messages
-  };
+const mapContextToProps = context => {
+  return mapMessageContextToProps(context);
 };
 
-export default connect(mapStateToProps)(Forgot);
+export default subscribe(ProviderContext, mapContextToProps)(Forgot);

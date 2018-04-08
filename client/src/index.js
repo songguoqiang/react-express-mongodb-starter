@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import App from "./components/App";
 import Home from "./components/Home";
@@ -10,8 +9,6 @@ import Signup from "./components/Account/Signup";
 import Profile from "./components/Account/Profile";
 import Forgot from "./components/Account/Forgot";
 import Reset from "./components/Account/Reset";
-
-import configureStore from "./store/configureStore";
 import registerServiceWorker from "./registerServiceWorker";
 
 import "whatwg-fetch";
@@ -19,22 +16,27 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap-theme.css";
 import "./index.css";
 
-const store = configureStore(window.INITIAL_STATE);
+import { Provider, subscribe } from "react-contextual";
 
-const clearMessages = () => {
-  store.dispatch({
-    type: "CLEAR_MESSAGES"
-  });
+const store = {
+  initialState: { jwtToken: null, user: {}, messages: {} },
+  actions: {
+    saveSession: (jwtToken, user) => ({ jwtToken, user }),
+    clearSession: () => ({ jwtToken: null, user: {} }),
+    clearMessages: () => ({ messages: {} }),
+    setErrorMessages: errors => ({ messages: { error: errors } }),
+    setSuccessMessages: success => ({ messages: { success: success } })
+  }
 };
 
-const isAuthenticated = () => store.getState().auth.token;
+const isAuthenticated = props => props.jwtToken !== null;
 
-const PrivateRoute = ({ render, ...rest }) => (
+const PrivateRoute = subscribe()(({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      isAuthenticated() ? (
-        render(props)
+      isAuthenticated(props) ? (
+        <Component {...props} />
       ) : (
         <Redirect
           to={{
@@ -45,42 +47,20 @@ const PrivateRoute = ({ render, ...rest }) => (
       )
     }
   />
-);
+));
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider {...store}>
     <BrowserRouter>
       <App>
         <Switch>
-          <Route
-            path="/"
-            exact
-            render={props => <Home {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/login"
-            render={props => <Login {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/signup"
-            render={props => <Signup {...props} onUnmount={clearMessages} />}
-          />
-          <PrivateRoute
-            path="/account"
-            render={props => <Profile {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/forgot"
-            render={props => <Forgot {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="/reset/:token"
-            render={props => <Reset {...props} onUnmount={clearMessages} />}
-          />
-          <Route
-            path="*"
-            render={props => <NotFound {...props} onUnmount={clearMessages} />}
-          />
+          <Route path="/" exact component={Home} />
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
+          <PrivateRoute path="/account" component={Profile} />
+          <Route path="/forgot" component={Forgot} />
+          <Route path="/reset/:token" component={Reset} />
+          <Route path="*" component={NotFound} />
         </Switch>
       </App>
     </BrowserRouter>

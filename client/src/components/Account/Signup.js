@@ -1,16 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { signup } from "../../actions/auth";
-import { object, func } from "prop-types";
+import { object } from "prop-types";
 import Messages from "../Messages";
+import { ProviderContext, subscribe } from "react-contextual";
+import {
+  withCallbacksForMessages,
+  withCallbacksForSession,
+  mapMessageContextToProps,
+  mapSessionContextToProps
+} from "../context_helper";
 
 class Signup extends React.Component {
   static propTypes = {
     history: object.isRequired,
-    messages: object.isRequired,
-    onMount: func,
-    onUnmount: func
+    messages: object.isRequired
   };
 
   constructor(props) {
@@ -18,16 +22,8 @@ class Signup extends React.Component {
     this.state = { name: "", email: "", password: "" };
   }
 
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount(this.props.history);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.props.onUnmount) {
-      this.props.onUnmount(this.props.history);
-    }
+    this.props.clearMessages();
   }
 
   handleChange(event) {
@@ -36,14 +32,14 @@ class Signup extends React.Component {
 
   handleSignup(event) {
     event.preventDefault();
-    this.props.dispatch(
-      signup({
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-        history: this.props.history
-      })
-    );
+    signup({
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      history: this.props.history,
+      ...withCallbacksForMessages(this.props),
+      ...withCallbacksForSession(this.props)
+    });
   }
 
   render() {
@@ -114,10 +110,11 @@ class Signup extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapContextToProps = context => {
   return {
-    messages: state.messages
+    ...mapSessionContextToProps(context),
+    ...mapMessageContextToProps(context)
   };
 };
 
-export default connect(mapStateToProps)(Signup);
+export default subscribe(ProviderContext, mapContextToProps)(Signup);

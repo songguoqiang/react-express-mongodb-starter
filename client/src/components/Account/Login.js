@@ -1,16 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { login } from "../../actions/auth";
 import Messages from "../Messages";
-import { object, func } from "prop-types";
+import { object } from "prop-types";
+import { ProviderContext, subscribe } from "react-contextual";
+import {
+  withCallbacksForMessages,
+  withCallbacksForSession,
+  mapMessageContextToProps,
+  mapSessionContextToProps
+} from "../context_helper";
 
 class Login extends React.Component {
   static propTypes = {
     history: object.isRequired,
-    messages: object.isRequired,
-    onMount: func,
-    onUnmount: func
+    messages: object.isRequired
   };
 
   constructor(props) {
@@ -18,16 +22,8 @@ class Login extends React.Component {
     this.state = { email: "", password: "" };
   }
 
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount(this.props.history);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.props.onUnmount) {
-      this.props.onUnmount(this.props.history);
-    }
+    this.props.clearMessages();
   }
 
   handleChange(event) {
@@ -45,14 +41,14 @@ class Login extends React.Component {
 
   handleLogin(event) {
     event.preventDefault();
-    this.props.dispatch(
-      login({
-        email: this.state.email,
-        password: this.state.password,
-        history: this.props.history,
-        from: this.getRedirectReferer()
-      })
-    );
+    login({
+      email: this.state.email,
+      password: this.state.password,
+      history: this.props.history,
+      from: this.getRedirectReferer(),
+      ...withCallbacksForMessages(this.props),
+      ...withCallbacksForSession(this.props)
+    });
   }
 
   render() {
@@ -110,10 +106,11 @@ class Login extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapContextToProps = context => {
   return {
-    messages: state.messages
+    ...mapSessionContextToProps(context),
+    ...mapMessageContextToProps(context)
   };
 };
 
-export default connect(mapStateToProps)(Login);
+export default subscribe(ProviderContext, mapContextToProps)(Login);

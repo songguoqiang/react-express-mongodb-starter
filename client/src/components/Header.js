@@ -1,9 +1,13 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import { withRouter } from "react-router";
 import { object, shape, string } from "prop-types";
+import { ProviderContext, subscribe } from "react-contextual";
+import {
+  withCallbacksForSession,
+  mapSessionContextToProps
+} from "../components/context_helper";
 
 class Header extends React.Component {
   static propTypes = {
@@ -20,7 +24,10 @@ class Header extends React.Component {
 
   handleLogout(event) {
     event.preventDefault();
-    this.props.dispatch(logout({ history: this.props.history }));
+    logout({
+      history: this.props.history,
+      ...withCallbacksForSession(this.props)
+    });
   }
 
   render() {
@@ -104,11 +111,10 @@ class Header extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    token: state.auth.token,
-    user: state.auth.user
-  };
+const mapContextToProps = context => {
+  return mapSessionContextToProps(context);
 };
 
-export default withRouter(connect(mapStateToProps)(Header));
+export default withRouter(
+  subscribe(ProviderContext, mapContextToProps)(Header)
+);

@@ -1,15 +1,10 @@
 import React from "react";
-import { object, func } from "prop-types";
+import { object } from "prop-types";
 
 class NotFound extends React.Component {
   static propTypes = {
-    history: object.isRequired,
-    onUnmount: func
+    history: object.isRequired
   };
-
-  componentWillUnmount() {
-    this.props.onUnmount(this.props.history);
-  }
 
   render() {
     return (

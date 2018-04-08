@@ -1,19 +1,23 @@
 import React from "react";
-import { connect } from "react-redux";
 import {
   updateProfile,
   changePassword,
   deleteAccount
 } from "../../actions/auth";
 import Messages from "../Messages";
-import { string, object, func } from "prop-types";
+import { string, object } from "prop-types";
+import { ProviderContext, subscribe } from "react-contextual";
+import {
+  withCallbacksForMessages,
+  withCallbacksForSession,
+  mapMessageContextToProps,
+  mapSessionContextToProps
+} from "../context_helper";
 
 class Profile extends React.Component {
   static propTypes = {
     token: string.isRequired,
     messages: object.isRequired,
-    onMount: func,
-    onUnmount: func,
     history: object.isRequired
   };
 
@@ -28,16 +32,8 @@ class Profile extends React.Component {
     };
   }
 
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount(this.props.history);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.props.onUnmount) {
-      this.props.onUnmount(this.props.history);
-    }
+    this.props.clearMessages();
   }
 
   handleChange(event) {
@@ -46,30 +42,31 @@ class Profile extends React.Component {
 
   handleProfileUpdate(event) {
     event.preventDefault();
-    this.props.dispatch(
-      updateProfile({ state: this.state, token: this.props.token })
-    );
+    updateProfile({
+      state: this.state,
+      token: this.props.token,
+      ...withCallbacksForMessages(this.props)
+    });
   }
 
   handleChangePassword(event) {
     event.preventDefault();
-    this.props.dispatch(
-      changePassword({
-        password: this.state.password,
-        confirm: this.state.confirm,
-        token: this.props.token
-      })
-    );
+    changePassword({
+      password: this.state.password,
+      confirm: this.state.confirm,
+      token: this.props.token,
+      ...withCallbacksForMessages(this.props)
+    });
   }
 
   handleDeleteAccount(event) {
     event.preventDefault();
-    this.props.dispatch(
-      deleteAccount({
-        token: this.props.token,
-        history: this.props.history
-      })
-    );
+    deleteAccount({
+      token: this.props.token,
+      history: this.props.history,
+      ...withCallbacksForMessages(this.props),
+      ...withCallbacksForSession(this.props)
+    });
   }
 
   render() {
@@ -208,12 +205,11 @@ class Profile extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapContextToProps = context => {
   return {
-    token: state.auth.token,
-    user: state.auth.user,
-    messages: state.messages
+    ...mapSessionContextToProps(context),
+    ...mapMessageContextToProps(context)
   };
 };
 
-export default connect(mapStateToProps)(Profile);
+export default subscribe(ProviderContext, mapContextToProps)(Profile);
