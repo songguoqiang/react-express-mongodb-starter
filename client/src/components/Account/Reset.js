@@ -4,8 +4,8 @@ import Messages from "../Messages";
 import { object, shape, string } from "prop-types";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
-  withCallbacksForMessages,
-  mapMessageContextToProps
+  mapMessageContextToProps,
+  messageContextPropType
 } from "../context_helper";
 
 class Reset extends React.Component {
@@ -14,7 +14,7 @@ class Reset extends React.Component {
     params: shape({
       token: string.isRequired
     }).isRequired,
-    messages: object.isRequired
+    ...messageContextPropType
   };
 
   constructor(props) {
@@ -23,7 +23,7 @@ class Reset extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.clearMessages();
+    this.props.messageContext.clearMessages();
   }
 
   handleChange(event) {
@@ -37,7 +37,7 @@ class Reset extends React.Component {
       confirm: this.state.confirm,
       token: this.props.match.params.token,
       history: this.props.history,
-      ...withCallbacksForMessages(this.props)
+      messageContext: this.props.messageContext
     });
   }
 
@@ -46,7 +46,7 @@ class Reset extends React.Component {
       <div className="container">
         <div className="panel">
           <div className="panel-body">
-            <Messages messages={this.props.messages} />
+            <Messages messages={this.props.messageContext.messages} />
             <form onSubmit={this.handleReset.bind(this)}>
               <legend>Reset Password</legend>
               <div className="form-group">

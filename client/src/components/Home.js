@@ -2,22 +2,25 @@ import React from "react";
 import Messages from "./Messages";
 import { object } from "prop-types";
 import { ProviderContext, subscribe } from "react-contextual";
-import { mapMessageContextToProps } from "../components/context_helper";
+import {
+  mapMessageContextToProps,
+  messageContextPropType
+} from "../components/context_helper";
 
 class Home extends React.Component {
   static propTypes = {
     history: object.isRequired,
-    messages: object.isRequired
+    ...messageContextPropType
   };
 
   componentWillUnmount() {
-    this.props.clearMessages();
+    this.props.messageContext.clearMessages();
   }
 
   render() {
     return (
       <div className="container-fluid">
-        <Messages messages={this.props.messages} />
+        <Messages messages={this.props.messageContext.messages} />
         <div className="row">
           <div className="col-sm-4">
             <div className="panel">

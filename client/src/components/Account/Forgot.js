@@ -1,16 +1,15 @@
 import React from "react";
 import { forgotPassword } from "../../actions/auth";
 import Messages from "../Messages";
-import { object } from "prop-types";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
-  withCallbacksForMessages,
-  mapMessageContextToProps
+  mapMessageContextToProps,
+  messageContextPropType
 } from "../context_helper";
 
 class Forgot extends React.Component {
   static propTypes = {
-    messages: object.isRequired
+    ...messageContextPropType
   };
 
   constructor(props) {
@@ -19,7 +18,7 @@ class Forgot extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.clearMessages();
+    this.props.messageContext.clearMessages();
   }
 
   handleChange(event) {
@@ -30,7 +29,7 @@ class Forgot extends React.Component {
     event.preventDefault();
     forgotPassword({
       email: this.state.email,
-      ...withCallbacksForMessages(this.props)
+      messageContext: this.props.messageContext
     });
   }
 
@@ -39,7 +38,7 @@ class Forgot extends React.Component {
       <div className="container">
         <div className="panel">
           <div className="panel-body">
-            <Messages messages={this.props.messages} />
+            <Messages messages={this.props.messageContext.messages} />
             <form onSubmit={this.handleForgot.bind(this)}>
               <legend>Forgot Password</legend>
               <div className="form-group">

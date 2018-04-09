@@ -6,11 +6,10 @@ export function login({
   history,
   cookies,
   from,
-  clearMessages,
-  saveSession,
-  setErrorMessages
+  messageContext,
+  sessionContext
 }) {
-  clearMessages();
+  messageContext.clearMessages();
   return fetch("/api/users/login", {
     method: "post",
     headers: { "Content-Type": "application/json" },
@@ -23,7 +22,7 @@ export function login({
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
-        saveSession(json.token, json.user);
+        sessionContext.saveSession(json.token, json.user);
         cookies.set("token", json.token, {
           expires: moment()
             .add(1, "hour")
@@ -34,7 +33,7 @@ export function login({
     } else {
       return response.json().then(json => {
         const messages = Array.isArray(json) ? json : [json];
-        setErrorMessages(messages);
+        messageContext.setErrorMessages(messages);
       });
     }
   });
@@ -46,11 +45,10 @@ export function signup({
   password,
   history,
   cookies,
-  clearMessages,
-  setErrorMessages,
-  saveSession
+  messageContext,
+  sessionContext
 }) {
-  clearMessages();
+  messageContext.clearMessages();
   return fetch("/api/users/signup", {
     method: "post",
     headers: { "Content-Type": "application/json" },
@@ -64,7 +62,7 @@ export function signup({
   }).then(response => {
     return response.json().then(json => {
       if (response.ok) {
-        saveSession(json.token, json.user);
+        sessionContext.saveSession(json.token, json.user);
         cookies.set("token", json.token, {
           expires: moment()
             .add(1, "hour")
@@ -73,25 +71,20 @@ export function signup({
         history.push("/");
       } else {
         const messages = Array.isArray(json) ? json : [json];
-        setErrorMessages(messages);
+        messageContext.setErrorMessages(messages);
       }
     });
   });
 }
 
-export function logout({ history, cookies, clearSession }) {
+export function logout({ history, cookies, sessionContext }) {
   cookies.remove("token");
-  clearSession();
+  sessionContext.clearSession();
   history.push("/");
 }
 
-export function forgotPassword({
-  email,
-  clearMessages,
-  setSuccessMessages,
-  setErrorMessages
-}) {
-  clearMessages();
+export function forgotPassword({ email, messageContext }) {
+  messageContext.clearMessages();
   return fetch("/api/user/forgot-password", {
     method: "post",
     headers: { "Content-Type": "application/json" },
@@ -99,12 +92,12 @@ export function forgotPassword({
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
-        setSuccessMessages([json]);
+        messageContext.setSuccessMessages([json]);
       });
     } else {
       return response.json().then(json => {
         const messages = Array.isArray(json) ? json : [json];
-        setErrorMessages(messages);
+        messageContext.setErrorMessages(messages);
       });
     }
   });
@@ -113,18 +106,16 @@ export function forgotPassword({
 export function resetPassword({
   password,
   confirm,
-  token,
   history,
-  clearMessages,
-  setSuccessMessages,
-  setErrorMessages
+  token,
+  messageContext
 }) {
-  clearMessages();
+  messageContext.clearMessages();
   if (password !== confirm) {
     const messages = [
       { msg: "Your confirmed password does not match the new password" }
     ];
-    setErrorMessages(messages);
+    messageContext.setErrorMessages(messages);
   } else {
     return fetch(`/api/user/reset-password/${token}`, {
       method: "post",
@@ -139,31 +130,25 @@ export function resetPassword({
       if (response.ok) {
         return response.json().then(json => {
           history.push("/login");
-          setSuccessMessages([json]);
+          messageContext.setSuccessMessages([json]);
         });
       } else {
         return response.json().then(json => {
           const messages = Array.isArray(json) ? json : [json];
-          setErrorMessages(messages);
+          messageContext.setErrorMessages(messages);
         });
       }
     });
   }
 }
 
-export function updateProfile({
-  state,
-  token,
-  clearMessages,
-  setSuccessMessages,
-  setErrorMessages
-}) {
-  clearMessages();
+export function updateProfile({ state, sessionContext, messageContext }) {
+  messageContext.clearMessages();
   return fetch("/api/user", {
     method: "put",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${sessionContext.token}`
     },
     body: JSON.stringify({
       user: {
@@ -174,12 +159,12 @@ export function updateProfile({
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
-        setSuccessMessages([json]);
+        messageContext.setSuccessMessages([json]);
       });
     } else {
       return response.json().then(json => {
         const messages = Array.isArray(json) ? json : [json];
-        setErrorMessages(messages);
+        messageContext.setErrorMessages(messages);
       });
     }
   });
@@ -188,23 +173,21 @@ export function updateProfile({
 export function changePassword({
   password,
   confirm,
-  token,
-  clearMessages,
-  setSuccessMessages,
-  setErrorMessages
+  sessionContext,
+  messageContext
 }) {
-  clearMessages();
+  messageContext.clearMessages();
   if (password !== confirm) {
     const messages = [
       { msg: "Your confirmed password does not match the new password" }
     ];
-    setErrorMessages(messages);
+    messageContext.setErrorMessages(messages);
   } else {
     return fetch("/api/user", {
       method: "put",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${sessionContext.token}`
       },
       body: JSON.stringify({
         user: {
@@ -215,12 +198,12 @@ export function changePassword({
     }).then(response => {
       if (response.ok) {
         return response.json().then(json => {
-          setSuccessMessages([json]);
+          messageContext.setSuccessMessages([json]);
         });
       } else {
         return response.json().then(json => {
           const messages = Array.isArray(json) ? json : [json];
-          setErrorMessages(messages);
+          messageContext.setErrorMessages(messages);
         });
       }
     });
@@ -230,29 +213,26 @@ export function changePassword({
 export function deleteAccount({
   history,
   cookies,
-  token,
-  clearMessages,
-  clearSession,
-  setSuccessMessages,
-  setErrorMessages
+  messageContext,
+  sessionContext
 }) {
-  clearMessages();
+  messageContext.clearMessages();
   return fetch("/api/user", {
     method: "delete",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${sessionContext.token}`
     }
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
-        logout({ history, cookies, clearSession });
-        setSuccessMessages([json]);
+        logout({ history, cookies, sessionContext });
+        messageContext.setSuccessMessages([json]);
       });
     } else {
       return response.json().then(json => {
         const messages = Array.isArray(json) ? json : [json];
-        setErrorMessages(messages);
+        messageContext.setErrorMessages(messages);
       });
     }
   });

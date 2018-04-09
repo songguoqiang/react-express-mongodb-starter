@@ -5,37 +5,37 @@ import {
   deleteAccount
 } from "../../actions/auth";
 import Messages from "../Messages";
-import { string, object, instanceOf } from "prop-types";
+import { object, instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
-  withCallbacksForMessages,
-  withCallbacksForSession,
   mapMessageContextToProps,
-  mapSessionContextToProps
+  mapSessionContextToProps,
+  messageContextPropType,
+  sessionContextPropType
 } from "../context_helper";
 
 class Profile extends React.Component {
   static propTypes = {
-    token: string.isRequired,
-    messages: object.isRequired,
     history: object.isRequired,
-    cookies: instanceOf(Cookies).isRequired
+    cookies: instanceOf(Cookies).isRequired,
+    ...messageContextPropType,
+    ...sessionContextPropType
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      email: props.user.email,
-      name: props.user.name,
-      gravatar: props.user.gravatar,
+      email: props.sessionContext.user.email,
+      name: props.sessionContext.user.name,
+      gravatar: props.sessionContext.user.gravatar,
       password: "",
       confirm: ""
     };
   }
 
   componentWillUnmount() {
-    this.props.clearMessages();
+    this.props.messageContext.clearMessages();
   }
 
   handleChange(event) {
@@ -46,8 +46,8 @@ class Profile extends React.Component {
     event.preventDefault();
     updateProfile({
       state: this.state,
-      token: this.props.token,
-      ...withCallbacksForMessages(this.props)
+      sessionContext: this.props.sessionContext,
+      messageContext: this.props.messageContext
     });
   }
 
@@ -56,19 +56,18 @@ class Profile extends React.Component {
     changePassword({
       password: this.state.password,
       confirm: this.state.confirm,
-      token: this.props.token,
-      ...withCallbacksForMessages(this.props)
+      sessionContext: this.props.sessionContext,
+      messageContext: this.props.messageContext
     });
   }
 
   handleDeleteAccount(event) {
     event.preventDefault();
     deleteAccount({
-      token: this.props.token,
       history: this.props.history,
       cookies: this.props.cookies,
-      ...withCallbacksForMessages(this.props),
-      ...withCallbacksForSession(this.props)
+      sessionContext: this.props.sessionContext,
+      messageContext: this.props.messageContext
     });
   }
 
@@ -77,7 +76,7 @@ class Profile extends React.Component {
       <div className="container">
         <div className="panel">
           <div className="panel-body">
-            <Messages messages={this.props.messages} />
+            <Messages messages={this.props.messageContext.messages} />
             <form
               onSubmit={this.handleProfileUpdate.bind(this)}
               className="form-horizontal"

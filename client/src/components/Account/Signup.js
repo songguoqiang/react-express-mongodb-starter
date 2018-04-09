@@ -6,17 +6,18 @@ import { withCookies, Cookies } from "react-cookie";
 import Messages from "../Messages";
 import { ProviderContext, subscribe } from "react-contextual";
 import {
-  withCallbacksForMessages,
-  withCallbacksForSession,
   mapMessageContextToProps,
-  mapSessionContextToProps
+  mapSessionContextToProps,
+  messageContextPropType,
+  sessionContextPropType
 } from "../context_helper";
 
 class Signup extends React.Component {
   static propTypes = {
     history: object.isRequired,
     cookies: instanceOf(Cookies).isRequired,
-    messages: object.isRequired
+    ...messageContextPropType,
+    ...sessionContextPropType
   };
 
   constructor(props) {
@@ -25,7 +26,7 @@ class Signup extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.clearMessages();
+    this.props.messageContext.clearMessages();
   }
 
   handleChange(event) {
@@ -40,8 +41,8 @@ class Signup extends React.Component {
       password: this.state.password,
       history: this.props.history,
       cookies: this.props.cookies,
-      ...withCallbacksForMessages(this.props),
-      ...withCallbacksForSession(this.props)
+      messageContext: this.props.messageContext,
+      sessionContext: this.props.sessionContext
     });
   }
 
@@ -50,7 +51,7 @@ class Signup extends React.Component {
       <div className="login-container container">
         <div className="panel">
           <div className="panel-body">
-            <Messages messages={this.props.messages} />
+            <Messages messages={this.props.messageContext.messages} />
             <form onSubmit={this.handleSignup.bind(this)}>
               <legend>Create an account</legend>
               <div className="form-group">
