@@ -34,6 +34,13 @@ class Profile extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      email: nextProps.sessionContext.user.email,
+      name: nextProps.sessionContext.user.name,
+      gravatar: nextProps.sessionContext.user.gravatar
+    };
+  }
   componentWillUnmount() {
     this.props.messageContext.clearMessages();
   }

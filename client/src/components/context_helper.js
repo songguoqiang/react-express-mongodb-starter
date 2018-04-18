@@ -17,7 +17,8 @@ export function mapSessionContextToProps(context) {
       token: context.jwtToken,
       user: context.user,
       saveSession: context.actions.saveSession,
-      clearSession: context.actions.clearSession
+      clearSession: context.actions.clearSession,
+      updateUserProfile: context.actions.updateUserProfile
     }
   };
 }
@@ -36,7 +37,8 @@ export const sessionContextPropType = {
     token: string,
     user: object,
     saveSession: func.isRequired,
-    clearSession: func.isRequired
+    clearSession: func.isRequired,
+    updateUserProfile: func.isRequired
   }).isRequired
 };
 

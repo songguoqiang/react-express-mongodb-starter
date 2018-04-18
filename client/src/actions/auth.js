@@ -143,6 +143,10 @@ export function resetPassword({
 }
 
 export function updateProfile({ state, sessionContext, messageContext }) {
+  const newProfile = {
+    email: state.email,
+    name: state.name
+  };
   messageContext.clearMessages();
   return fetch("/api/user", {
     method: "put",
@@ -151,15 +155,13 @@ export function updateProfile({ state, sessionContext, messageContext }) {
       Authorization: `Bearer ${sessionContext.token}`
     },
     body: JSON.stringify({
-      user: {
-        email: state.email,
-        name: state.name
-      }
+      user: newProfile
     })
   }).then(response => {
     if (response.ok) {
       return response.json().then(json => {
         messageContext.setSuccessMessages([json]);
+        sessionContext.updateUserProfile(newProfile);
       });
     } else {
       return response.json().then(json => {

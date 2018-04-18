@@ -11,43 +11,63 @@ import Profile from "./Account/Profile";
 import Forgot from "./Account/Forgot";
 import Reset from "./Account/Reset";
 
-import { Provider, subscribe } from "react-contextual";
-
-const store = {
-  initialState: { jwtToken: null, user: {}, messages: {} },
-  actions: {
-    saveSession: (jwtToken, user) => ({ jwtToken, user }),
-    clearSession: () => ({ jwtToken: null, user: {} }),
-    clearMessages: () => ({ messages: {} }),
-    setErrorMessages: errors => ({ messages: { error: errors } }),
-    setSuccessMessages: success => ({ messages: { success: success } })
-  }
-};
-
-const isAuthenticated = props => props.jwtToken !== null;
-
-const PrivateRoute = subscribe()(({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      isAuthenticated(props) ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: props.location }
-          }}
-        />
-      )
-    }
-  />
-));
+import { Provider } from "react-contextual";
 
 class App extends React.Component {
+  isAuthenticated = false;
+  saveSession = (jwtToken, user) => {
+    this.isAuthenticated = true;
+    return { jwtToken, user };
+  };
+
+  clearSession = () => {
+    this.isAuthenticated = false;
+    return { jwtToken: null, user: {} };
+  };
+
+  updateUserProfile1(newProfile) {
+    return function(state) {
+      return {
+        user: Object.assign(state.user, newProfile)
+      };
+    };
+  }
+
+  store = {
+    initialState: { jwtToken: null, user: {}, messages: {} },
+    actions: {
+      saveSession: this.saveSession,
+      clearSession: this.clearSession,
+      updateUserProfile: newProfile => state => ({
+        user: Object.assign(state.user, newProfile)
+      }),
+      clearMessages: () => ({ messages: {} }),
+      setErrorMessages: errors => ({ messages: { error: errors } }),
+      setSuccessMessages: success => ({ messages: { success: success } })
+    }
+  };
+
+  PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      render={props =>
+        this.isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }
+    />
+  );
+
   render() {
     return (
-      <Provider {...store}>
+      <Provider {...this.store}>
         <CookiesProvider>
           <BrowserRouter>
             <div>
@@ -56,7 +76,7 @@ class App extends React.Component {
                 <Route path="/" exact component={Home} />
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
-                <PrivateRoute path="/account" component={Profile} />
+                <this.PrivateRoute path="/account" component={Profile} />
                 <Route path="/forgot" component={Forgot} />
                 <Route path="/reset/:token" component={Reset} />
                 <Route path="*" component={NotFound} />
