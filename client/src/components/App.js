@@ -25,14 +25,6 @@ class App extends React.Component {
     return { jwtToken: null, user: {} };
   };
 
-  updateUserProfile1(newProfile) {
-    return function(state) {
-      return {
-        user: Object.assign(state.user, newProfile)
-      };
-    };
-  }
-
   store = {
     initialState: { jwtToken: null, user: {}, messages: {} },
     actions: {
