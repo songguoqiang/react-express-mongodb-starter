@@ -41,11 +41,13 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-jest": "^21.25.1",
     "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.1.2",
     "jest": "^23.6.0",
     "lolex": "^3.0.0",
     "mongodb-memory-server": "^2.6.0",
     "mongoose-fixture-loader": "^1.0.2",
     "prettier": "^1.14.3",
+    "pretty-quick": "^1.8.0",
     "sinon": "^7.0.0",
     "supertest": "^3.3.0"
   },
@@ -58,6 +60,11 @@
         "lines": 80,
         "statements": -50
       }
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
     }
   }
 }
