@@ -8,10 +8,10 @@
     "moment": "^2.22.0",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2",
     "react-bootstrap": "^0.32.1",
     "react-contextual": "~4.0.0",
     "react-cookie": "^2.1.4",
+    "react-dom": "^16.5.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "~2.0.5",
@@ -23,9 +23,11 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-jest": "^21.25.1",
     "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.1.2",
     "jest": "^23.6.0",
     "jest-enzyme": "^7.0.0",
     "prettier": "^1.14.3",
+    "pretty-quick": "^1.8.0",
     "react-test-renderer": "^16.5.2"
   },
   "scripts": {
@@ -49,5 +51,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
 }
