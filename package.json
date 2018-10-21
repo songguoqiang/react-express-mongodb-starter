@@ -32,17 +32,12 @@
     "husky": "^1.1.2",
     "lint-staged": "^7.3.0",
     "nodemon": "^1.18.4",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "pretty-quick": "^1.8.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "pretty-quick --staged"
     }
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,json,css}": [
-      "prettier --write",
-      "git add"
-    ]
   }
 }
