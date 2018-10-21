@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A starter project for running React and Express together",
   "scripts": {
-    "precommit": "lint-staged",
     "install": "concurrently \"cd client&&yarn\" \"cd server&&yarn\"",
     "test": "concurrently \"cd client&&cross-env CI=true yarn test\" \"cd server&&yarn test\"",
     "build": "concurrently \"cd client && yarn build\"",
@@ -34,6 +33,11 @@
     "lint-staged": "^7.3.0",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "**/*.{js,jsx,json,css}": [
