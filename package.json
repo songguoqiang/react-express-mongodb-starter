@@ -4,19 +4,18 @@
   "description": "A starter project for running React and Express together",
   "scripts": {
     "precommit": "lint-staged",
-    "install": "(cd client && yarn) && (cd server && yarn)",
-    "test": "(cd client && CI=true yarn test) && (cd server && yarn test)",
+    "install": "concurrently \"cd client&&yarn\" \"cd server&&yarn\"",
+    "test": "concurrently \"cd client&&cross-env CI=true yarn test\" \"cd server&&yarn test\"",
     "build": "concurrently \"cd client && yarn build\"",
     "heroku-postbuild": "yarn build",
-    "start":
-      "concurrently --kill-others-on-fail \"yarn start:dev:server\" \"yarn start:client\"",
-    "start:prod:server": "cd server && yarn start",
-    "start:client": "cd client && yarn start",
-    "start:dev:server": "cd server && yarn dev"
+    "start": "concurrently --kill-others-on-fail \"yarn start:dev:server\" \"yarn start:client\"",
+    "start:prod:server": "cd server&&yarn start",
+    "start:client": "cd client&&yarn start",
+    "start:dev:server": "cd server&&yarn dev"
   },
   "engines": {
-    "node": "^9.3.0",
-    "yarn": "^1.5.1"
+    "node": "^10.11.0",
+    "yarn": "^1.9.4"
   },
   "cacheDirectories": [
     "node_modules",
@@ -29,13 +28,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^3.5.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.0.2",
-    "nodemon": "^1.17.3",
-    "prettier": "^1.11.1"
+    "concurrently": "^4.0.1",
+    "cross-env": "^5.2.0",
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
+    "nodemon": "^1.18.4",
+    "prettier": "^1.14.3"
   },
   "lint-staged": {
-    "**/*.{js,jsx,json,css}": ["prettier --write", "git add"]
+    "**/*.{js,jsx,json,css}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
